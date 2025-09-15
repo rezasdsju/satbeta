@@ -15,7 +15,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------
 SECRET_KEY = 'django-insecure-your-secret-key-change-this'
 DEBUG = True  # Deployment-এর আগে False set করো
-ALLOWED_HOSTS = ['*']  # VPS IP / Domain add করো deploy-এর জন্য
+ALLOWED_HOSTS = ['161.248.189.240', 'www.satbeta.top']
+
 
 # -------------------------
 # INSTALLED APPS
@@ -81,13 +82,14 @@ WSGI_APPLICATION = 'satbeta.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'satbeta_db',         # VPS DB name
-        'USER': 'satbeta_user',       # VPS DB user
-        'PASSWORD': '2313Reza@',      # VPS DB password
-        'HOST': 'localhost',          # Usually localhost
+        'NAME': 'satbeta_db',
+        'USER': 'satbeta_user',
+        'PASSWORD': '2313Reza@',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
+
 
 # -------------------------
 # PASSWORD VALIDATION

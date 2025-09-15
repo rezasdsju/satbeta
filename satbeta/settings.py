@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'satbeta.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_DB", "satbeta_db"),
+        'NAME': os.getenv("POSTGRES_DB", "satbeta_database"),
         'USER': os.getenv("POSTGRES_USER", "rezasdsju"),
         'PASSWORD': os.getenv("POSTGRES_PASSWORD", "2313Reza@"),
         'HOST': os.getenv("POSTGRES_HOST", "localhost"),

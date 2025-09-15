@@ -1,22 +1,30 @@
 """
 Django settings for satbeta project.
-Generated with deployment and PostgreSQL in mind.
+Production-ready with PostgreSQL and .env support.
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # -------------------------
 # BASE DIR
 # -------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables
+load_dotenv(BASE_DIR / ".env")
+
 # -------------------------
 # SECURITY
 # -------------------------
-SECRET_KEY = 'django-insecure-your-secret-key-change-this'
-DEBUG = True  # Deployment-এর আগে False set করো
-ALLOWED_HOSTS = ['161.248.189.240', 'www.satbeta.top']
-
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-default-key")
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+ALLOWED_HOSTS = [
+    "161.248.189.240",
+    "satbeta.top",
+    "www.satbeta.top",
+]
 
 # -------------------------
 # INSTALLED APPS
@@ -82,31 +90,22 @@ WSGI_APPLICATION = 'satbeta.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'satbeta_db',
-        'USER': 'satbeta_user',
-        'PASSWORD': '2313Reza@',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv("POSTGRES_DB", "satbeta_db"),
+        'USER': os.getenv("POSTGRES_USER", "satbeta_user"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD", "change_me"),
+        'HOST': os.getenv("POSTGRES_HOST", "localhost"),
+        'PORT': os.getenv("POSTGRES_PORT", "5432"),
     }
 }
-
 
 # -------------------------
 # PASSWORD VALIDATION
 # -------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # -------------------------
@@ -119,13 +118,25 @@ USE_L10N = True
 USE_TZ = True
 
 # -------------------------
-# STATIC FILES
+# STATIC & MEDIA FILES
 # -------------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # For VPS collectstatic
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Your local static folder
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # -------------------------
 # DEFAULT PRIMARY KEY
 # -------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# -------------------------
+# SECURITY HEADERS (for HTTPS)
+# -------------------------
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'

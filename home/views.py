@@ -33,3 +33,6 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+def programming_hub_view(request):
+    return render(request, 'home/programming/program_hub.html')

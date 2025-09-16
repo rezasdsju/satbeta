@@ -267,7 +267,7 @@ body {
     </ul>
 
     <!-- User Auth -->
-    <!--
+    
     <div class="user-auth">
         {% if user.is_authenticated %}
             <span>Welcome, {{ user.username }}!</span>
@@ -276,11 +276,11 @@ body {
                 <button type="submit">Logout</button>
             </form>
         {% else %}
-            <a href="#">Login</a>
-            <a href="#">Sign Up</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">Sign Up</a>
         {% endif %}
         <a href="#" class="nav-link"><i class="fas fa-robot"></i> SatGPT</a>
-    </div>-->
+    </div>
 
     <!-- Hamburger -->
     <div class="hamburger"><i class="fas fa-bars"></i></div>

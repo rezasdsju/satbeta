@@ -1,4 +1,43 @@
+# Django framework
 Django>=4.2,<5.0
+
+# PostgreSQL adapter
 psycopg2-binary>=2.9
-gunicorn>=21.2
+
+# WSGI server
+gunicorn>=23.0.0
+
+# Environment variables
 python-dotenv>=1.0
+python-decouple>=3.8
+
+# Database utilities
+dj-database-url>=3.0.1
+
+# ASGI support
+asgiref==3.9.1
+
+# Text & encoding utilities
+charset-normalizer==3.4.3
+packaging==25.0
+
+# Image processing
+pillow==11.3.0
+
+# Reporting & PDFs
+reportlab==4.4.3
+
+# SQL parsing
+sqlparse==0.5.3
+
+# Timezone data
+tzdata==2025.2
+
+# Static files
+whitenoise==6.9.0
+
+# Data analysis
+pandas>=2.0
+
+# Word document handling
+python-docx>=0.8.12

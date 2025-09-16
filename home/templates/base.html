@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}SAT {% endblock %}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 50px;
+    color: #fff;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 70px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-right: 20px;
+}
+.logo i {
+    margin-right: 10px;
+    color: #43cbff;
+}
+
+/* User Auth */
+.user-auth {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+.user-auth span { margin-right: 15px; color: #fff; margin-left: 20px; /* এখানে তুমি padding দিতে পারো */ }
+.user-auth a, .user-auth button {
+    color: #fff;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 6px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+.user-auth a:hover, .user-auth button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Desktop horizontal scroll menu */
+.nav-scroll-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.nav-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+.nav-menu {
+    display: flex;
+    flex-wrap: nowrap;
+    list-style: none;
+}
+.nav-item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 0 20px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.nav-link i { margin-right: 8px; font-size: 18px; }
+
+/* Separators */
+.nav-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+.nav-link:hover {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+    color: #43cbff;
+}
+.nav-link::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #43cbff, #9708cc);
+    border-radius: 4px 4px 0 0;
+    transition: width 0.3s ease;
+}
+.nav-link:hover::before { width: 70%; }
+
+/* Content wrapper */
+.content-wrapper {
+    width: 100%;
+    flex: 1;
+    padding: 20px;
+}
+
+/* Mobile hamburger menu */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+/* Mobile menu hidden by default */
+.mobile-menu {
+    display: none;
+}
+
+
+
+/* Scroll Buttons */
+.scroll-buttons {
+    display: flex;
+    align-items: center;
+    margin-left: 10px; /* SAT এর পাশে distance */
+}
+
+.scroll-buttons button {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 0 2px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.scroll-buttons button:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Mobile-এ hide করতে চাওলে */
+@media screen and (max-width: 768px) {
+    .scroll-buttons { display: none; }
+}
+
+
+
+
+
+
+
+@media screen and (max-width: 768px) {
+    .nav-scroll-wrapper { display: none; }
+    .hamburger { display: block; }
+
+    .mobile-menu {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        width: 100%;
+        height: auto;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        padding: 20px 0;
+        transition: left 0.5s ease;
+        z-index: 999;
+    }
+    .mobile-menu.active { left: 0; }
+
+    .nav-item { width: 100%; justify-content: center; height: 60px; }
+    .nav-link { width: 100%; justify-content: center; text-align: center; padding: 20px; }
+    .user-auth { flex-direction: row; width: 100%; padding: 10px 0; margin-left: 0; }
+    .user-auth a, .user-auth button { margin: 5px 0; width: 100%; text-align: center; }
+}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar">
+    <!-- Logo -->
+    <a href="#" class="logo"><i class="fas fa-graduation-cap"></i> SAT </a>
+
+
+
+<!-- Scroll Buttons -->
+<div class="scroll-buttons">
+    <button id="scroll-left">&lt;</button>
+    <button id="scroll-right">&gt;</button>
+</div>
+
+
+
+
+
+
+    <!-- Desktop Horizontal Scroll Menu -->
+    <div class="nav-scroll-wrapper"> 
+        <ul class="nav-menu desktop-menu">
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-code"></i> Programming</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-column"></i> Analytics</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-book"></i> Tutorials</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-file-pdf"></i> PDF Library</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-question-circle"></i> MCQ Exam</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Create Result Sheet</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Research Help</a></li>
+        </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <ul class="nav-menu mobile-menu">
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-code"></i> Programming</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-column"></i> Analytics</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-book"></i> Tutorials</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-file-pdf"></i> PDF Library</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-question-circle"></i> MCQ Exam</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Create Result Sheet</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Research Help</a></li>
+    </ul>
+
+    <!-- User Auth -->
+    <!--
+    <div class="user-auth">
+        {% if user.is_authenticated %}
+            <span>Welcome, {{ user.username }}!</span>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="#">Login</a>
+            <a href="#">Sign Up</a>
+        {% endif %}
+        <a href="#" class="nav-link"><i class="fas fa-robot"></i> SatGPT</a>
+    </div>-->
+
+    <!-- Hamburger -->
+    <div class="hamburger"><i class="fas fa-bars"></i></div>
+</nav>
+
+<div class="content-wrapper">
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% block content %}{% endblock %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    hamburger.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+    });
+
+    const navLinks = document.querySelectorAll('.mobile-menu .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navScroll = document.querySelector('.nav-scroll-wrapper');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
+
+    scrollLeftBtn.addEventListener('click', () => {
+        navScroll.scrollBy({ left: -150, behavior: 'smooth' });
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+        navScroll.scrollBy({ left: 150, behavior: 'smooth' });
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

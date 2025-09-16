@@ -1,0 +1,735 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Python Code Runner - SAT{% endblock %}
+
+{% block extra_css %}
+<style>
+    .python-runner-container {
+        width: 100%;
+        max-width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        margin: 20px auto;
+    }
+    
+    .python-runner-header {
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .python-runner-header h1 {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .python-runner-header .subtitle {
+        font-size: 1rem;
+        opacity: 0.8;
+    }
+    
+    .three-column-layout {
+        display: flex;
+        height: 70vh;
+    }
+    
+    .discussion-section {
+        flex: 1;
+        padding: 20px;
+        background: #f8f9fa;
+        border-right: 1px solid #eee;
+        overflow-y: auto;
+    }
+    
+    .code-section {
+        flex: 1;
+        padding: 20px;
+        background: #fff;
+        border-right: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .output-section {
+        flex: 1;
+        padding: 20px;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title i {
+        margin-right: 10px;
+    }
+    
+    #code {
+        width: 100%;
+        height: 100%;
+        min-height: 300px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        resize: none;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        background: #fafafa;
+        flex-grow: 1;
+    }
+    
+    .buttons {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+    }
+    
+    .runner-btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .runner-btn i {
+        margin-right: 8px;
+    }
+    
+    #run-btn {
+        background: #27ae60;
+        color: white;
+        flex: 2;
+    }
+    
+    #run-btn:hover {
+        background: #219653;
+        transform: translateY(-2px);
+    }
+    
+    #clear-btn {
+        background: #e74c3c;
+        color: white;
+        flex: 1;
+    }
+    
+    #clear-btn:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+    }
+    
+    .output-container {
+        background: #2c3e50;
+        color: white;
+        border-radius: 8px;
+        padding: 15px;
+        height: 100%;
+        overflow-y: auto;
+        font-family: 'Courier New', monospace;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        flex-grow: 1;
+    }
+    
+    #output {
+        white-space: pre-wrap;
+        line-height: 1.5;
+        height: 100%;
+    }
+    
+    .status {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: 500;
+    }
+    
+    .loading {
+        background: #3498db;
+        color: white;
+    }
+    
+    .success {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .error {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .hidden {
+        display: none;
+    }
+    
+    .examples {
+        margin-top: 20px;
+        padding: 0 20px 20px;
+    }
+    
+    .examples h3 {
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+    
+    .example-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .example-btn {
+        background: #3498db;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.3s;
+    }
+    
+    .example-btn:hover {
+        background: #2980b9;
+    }
+    
+    .package-info {
+        background: #e9ecef;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+    
+    .python-runner-footer {
+        text-align: center;
+        padding: 15px;
+        background: #f8f9fa;
+        color: #6c757d;
+        font-size: 0.9rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .discussion-content {
+        line-height: 1.6;
+    }
+    
+    .discussion-content h3 {
+        color: #2c3e50;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .discussion-content p {
+        margin-bottom: 15px;
+        color: blue;
+    }
+    
+    .discussion-content code {
+        background-color: #f1f1f1;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        color: red;
+    }
+    
+    .discussion-content pre {
+        background-color: #2c3e50;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        margin: 15px 0;
+    }
+    
+    .discussion-content ul {
+        margin-left: 20px;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+    
+    .discussion-content li {
+        margin-bottom: 8px;
+    }
+
+    .back-buttons {
+    margin-top: 20px;
+    padding: 0 20px 20px;
+}
+
+.back-buttons a {
+    background: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.back-buttons a:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: white;
+}
+
+.back-buttons a:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+    
+    @media (max-width: 992px) {
+        .three-column-layout {
+            flex-direction: column;
+            height: auto;
+        }
+        
+        .discussion-section {
+            height: 300px;
+            border-right: none;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .code-section {
+            height: 400px;
+            border-right: none;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .output-section {
+            height: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="python-runner-container">
+    <div class="python-runner-header">
+        <h1><i class="fas fa-code"></i> Python Code Runner</h1>
+        <p class="subtitle">With pandas and numpy support</p>
+    </div>
+    
+    <div class="three-column-layout">
+        <!-- Left Column: Discussion/Tutorial (1/3 width) -->
+        <div class="discussion-section">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Python Tutorial</h2>
+            <div class="discussion-content">
+                <h3>Pandas Library</h3>
+                <p>Pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.</p>
+                
+                <h3>DataFrame Basics</h3>
+                <p>A DataFrame is a 2-dimensional labeled data structure with columns of potentially different types. You can think of it like a spreadsheet or SQL table.</p>
+                
+                <h3>Example Code Explanation</h3>
+                <p>The code in the editor creates a simple DataFrame:</p>
+                <pre>import pandas as pd
+data = {'x': [3]}   # value is a list
+df = pd.DataFrame(data)
+print(df)</pre>
+                
+                <p>This creates a DataFrame with one column named 'x' containing a single value 3.</p>
+                
+                <h3>Common DataFrame Operations</h3>
+                <p>Some common operations you can perform with DataFrames:</p>
+                <ul>
+                    <li><code>df.head()</code> - View first few rows</li>
+                    <li><code>df.describe()</code> - Summary statistics</li>
+                    <li><code>df['column_name']</code> - Access a specific column</li>
+                    <li><code>df.shape</code> - Get dimensions of DataFrame</li>
+                    <li><code>df.info()</code> - Get information about data types</li>
+                </ul>
+                
+                <h3>Numpy Integration</h3>
+                <p>Pandas works well with NumPy. You can convert DataFrame columns to NumPy arrays for mathematical operations:</p>
+                <pre>import numpy as np
+values = df['x'].values  # Convert to NumPy array
+result = np.mean(values) # Calculate mean</pre>
+                
+                <h3>Data Selection</h3>
+                <p>You can select data from a DataFrame in multiple ways:</p>
+                <pre># Select a single column
+ages = df['Age']
+
+# Select multiple columns
+subset = df[['Name', 'Age']]
+
+# Filter rows based on condition
+adults = df[df['Age'] >= 18]</pre>
+                
+                <h3>Tips for Effective Data Analysis</h3>
+                <p>1. Always check for missing values using <code>df.isnull().sum()</code></p>
+                <p>2. Use <code>df.info()</code> to get information about data types</p>
+                <p>3. Explore your data with <code>df.describe()</code> before analysis</p>
+                <p>4. Use <code>df.columns</code> to see all column names</p>
+            </div>
+        </div>
+        
+        <!-- Middle Column: Code Editor (1/3 width) -->
+        <div class="code-section">
+            <h2 class="section-title"><i class="fas fa-pencil-alt"></i> Code Editor</h2>
+            <textarea id="code" placeholder="Write your Python code here...">import pandas as pd
+
+# Create a DataFrame from a dictionary
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'David'],
+    'Age': [25, 30, 35, 40],
+    'City': ['New York', 'London', 'Paris', 'Tokyo']
+}
+
+df = pd.DataFrame(data)
+print("DataFrame:")
+print(df)
+print()
+
+# Access columns
+print("Ages:", df['Age'].tolist())
+print("Average age:", df['Age'].mean())</textarea>
+            
+            <div class="buttons">
+                <button id="run-btn" class="runner-btn"><i class="fas fa-play"></i> Run Code</button>
+                <button id="clear-btn" class="runner-btn"><i class="fas fa-eraser"></i> Clear</button>
+            </div>
+            
+            <div id="status" class="status hidden"></div>
+            
+            <div class="package-info">
+                <p><i class="fas fa-info-circle"></i> <strong>Available packages:</strong> pandas, numpy, and more</p>
+                <p>Packages will be loaded automatically when needed</p>
+            </div>
+        </div>
+        
+        <!-- Right Column: Output (1/3 width) -->
+        <div class="output-section">
+            <h2 class="section-title"><i class="fas fa-terminal"></i> Output</h2>
+            <div class="output-container">
+                <pre id="output">Output will be displayed here...</pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="examples">
+        <h3><i class="fas fa-lightbulb"></i> Code Examples</h3>
+        <div class="example-buttons">
+            <button class="example-btn" data-example="pandas">Pandas Example</button>
+            <button class="example-btn" data-example="numpy">Numpy Example</button>
+            <button class="example-btn" data-example="fibonacci">Fibonacci</button>
+            <!--<button class="example-btn" data-example="hello">Hello World</button>-->
+        </div>
+        <div class="back-buttons">
+            <a href="{% url 'python_child_1' %}">Previous Page</a>
+        </div>  
+    </div>
+    <!-- 
+    <div class="python-runner-footer">
+        <p>Powered by Pyodide - Python running in your browser | © 2023 Python Code Runner</p>
+    </div> -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+<script>
+    // Initialize Pyodide
+    let pyodide;
+    let outputElement = document.getElementById('output');
+    let isPyodideLoading = false;
+    let isPyodideReady = false;
+    let loadedPackages = new Set();
+    
+    // Function to initialize Pyodide
+    async function initializePyodide() {
+        if (isPyodideReady) return true;
+        if (isPyodideLoading) {
+            // Wait for Pyodide to finish loading
+            return new Promise(resolve => {
+                const checkInterval = setInterval(() => {
+                    if (isPyodideReady) {
+                        clearInterval(checkInterval);
+                        resolve(true);
+                    }
+                }, 100);
+            });
+        }
+        
+        isPyodideLoading = true;
+        const status = document.getElementById('status');
+        status.textContent = "Loading Python runtime...";
+        status.className = "status loading";
+        status.classList.remove("hidden");
+        
+        try {
+            // Load Pyodide
+            pyodide = await loadPyodide();
+            
+            // Set up a custom function to capture Python output
+            pyodide.runPython(`
+            import sys
+            from io import StringIO
+            
+            # Create a string buffer to capture output
+            output_buffer = StringIO()
+            
+            # Redirect stdout and stderr to our buffer
+            sys.stdout = output_buffer
+            sys.stderr = output_buffer
+            
+            # Function to get and clear the output buffer
+            def get_output():
+                value = output_buffer.getvalue()
+                output_buffer.truncate(0)
+                output_buffer.seek(0)
+                return value
+            `);
+            
+            // Make the get_output function available in JavaScript
+            window.getOutput = pyodide.globals.get('get_output');
+            
+            isPyodideReady = true;
+            status.textContent = "Python runtime loaded successfully!";
+            setTimeout(() => {
+                status.classList.add("hidden");
+            }, 2000);
+            
+            return true;
+        } catch (error) {
+            status.textContent = `Error loading Python: ${error.message}`;
+            status.className = "status error";
+            isPyodideLoading = false;
+            return false;
+        }
+    }
+    
+    // Load a package
+    async function loadPackage(packageName) {
+        if (loadedPackages.has(packageName)) {
+            return true;
+        }
+        
+        const status = document.getElementById('status');
+        status.textContent = `Loading ${packageName} package...`;
+        status.className = "status loading";
+        status.classList.remove("hidden");
+        
+        try {
+            // Load the package
+            await pyodide.loadPackage(packageName);
+            loadedPackages.add(packageName);
+            
+            status.textContent = `${packageName} package loaded successfully!`;
+            setTimeout(() => {
+                status.classList.add("hidden");
+            }, 2000);
+            
+            return true;
+        } catch (error) {
+            status.textContent = `Error loading ${packageName}: ${error.message}`;
+            status.className = "status error";
+            return false;
+        }
+    }
+    
+    // Check if code requires a specific package
+    function checkForPackages(code) {
+        const packageImports = {
+            'pandas': ['pandas', 'pd'],
+            'numpy': ['numpy', 'np'],
+            'matplotlib': ['matplotlib', 'plt'],
+            'sklearn': ['sklearn'],
+            'scipy': ['scipy']
+        };
+        
+        const requiredPackages = [];
+        
+        for (const [pkg, imports] of Object.entries(packageImports)) {
+            for (const importName of imports) {
+                if (code.includes(importName)) {
+                    requiredPackages.push(pkg);
+                    break;
+                }
+            }
+        }
+        
+        return requiredPackages;
+    }
+    
+    // Run the Python code
+    async function runCode() {
+        const code = document.getElementById('code').value;
+        const status = document.getElementById('status');
+        
+        // Initialize Pyodide if not ready
+        if (!isPyodideReady) {
+            const initialized = await initializePyodide();
+            if (!initialized) {
+                return;
+            }
+        }
+        
+        // Check for required packages
+        const requiredPackages = checkForPackages(code);
+        
+        // Load required packages
+        for (const pkg of requiredPackages) {
+            if (!loadedPackages.has(pkg)) {
+                const loaded = await loadPackage(pkg);
+                if (!loaded) {
+                    return;
+                }
+            }
+        }
+        
+        // Show loading status
+        status.textContent = "Running code...";
+        status.className = "status loading";
+        status.classList.remove("hidden");
+        
+        try {
+            // Clear previous output by resetting the buffer
+            pyodide.runPython(`output_buffer.truncate(0); output_buffer.seek(0);`);
+            
+            // Run the user's code
+            await pyodide.runPythonAsync(code);
+            
+            // Get the output from the buffer
+            let output = getOutput();
+            outputElement.textContent = output || "Code executed successfully (no output)";
+            
+            status.textContent = "Code executed successfully!";
+            status.className = "status success";
+            
+        } catch (err) {
+            outputElement.textContent = String(err);
+            status.textContent = "Error occurred during execution!";
+            status.className = "status error";
+        }
+        
+        // Hide status after 3 seconds
+        setTimeout(() => {
+            status.classList.add("hidden");
+        }, 3000);
+    }
+    
+    // Clear the output and code editor
+    function clearAll() {
+        document.getElementById('code').value = "";
+        outputElement.textContent = "";
+        const status = document.getElementById('status');
+        status.classList.add("hidden");
+        
+        // Also clear the Python output buffer if Pyodide is ready
+        if (isPyodideReady) {
+            pyodide.runPython(`output_buffer.truncate(0); output_buffer.seek(0);`);
+        }
+    }
+    
+    // Load examples
+    function loadExample(exampleName) {
+        const examples = {
+            pandas: `import pandas as pd
+
+# Create a DataFrame from a dictionary
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'David'],
+    'Age': [25, 30, 35, 40],
+    'City': ['New York', 'London', 'Paris', 'Tokyo']
+}
+
+df = pd.DataFrame(data)
+print("DataFrame:")
+print(df)
+print()
+
+# Access columns
+print("Ages:", df['Age'].tolist())
+print("Average age:", df['Age'].mean())`,
+            
+            numpy: `import numpy as np
+
+# Create arrays
+arr1 = np.array([1, 2, 3, 4, 5])
+arr2 = np.array([10, 20, 30, 40, 50])
+
+print("Array 1:", arr1)
+print("Array 2:", arr2)
+print()
+
+# Basic operations
+print("Addition:", arr1 + arr2)
+print("Multiplication:", arr1 * arr2)
+print("Dot product:", np.dot(arr1, arr2))`,
+            
+            fibonacci: `# Fibonacci Sequence with Function
+def fibonacci(n):
+    """Generate Fibonacci sequence up to n terms"""
+    sequence = []
+    a, b = 0, 1
+    for _ in range(n):
+        sequence.append(a)
+        a, b = b, a + b
+    return sequence
+
+# Generate and print Fibonacci sequence
+n_terms = 15
+fib_sequence = fibonacci(n_terms)
+print(f"Fibonacci sequence with {n_terms} terms:")
+print(fib_sequence)`,
+            
+            hello: `# Hello World Example
+print("Hello, World!")
+print("Welcome to Python Code Runner!")
+
+# Simple calculations
+a = 10
+b = 20
+print(f"{a} + {b} = {a + b}")
+print(f"{a} * {b} = {a * b}")`
+        };
+        
+        if (examples[exampleName]) {
+            document.getElementById('code').value = examples[exampleName];
+        }
+    }
+    
+    // Set up event listeners when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners
+        document.getElementById('run-btn').addEventListener('click', runCode);
+        document.getElementById('clear-btn').addEventListener('click', clearAll);
+        
+        // Add example buttons listeners
+        const exampleButtons = document.querySelectorAll('.example-btn');
+        exampleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                loadExample(this.dataset.example);
+            });
+        });
+        
+        // Preload Pyodide in the background
+        initializePyodide();
+    });
+</script>
+{% endblock %}              

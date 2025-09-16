@@ -3,5 +3,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls', namespace='home')),  # Home app
+    path('', include('home.urls')),  # <-- home.urls include আছে কি check করো
 ]

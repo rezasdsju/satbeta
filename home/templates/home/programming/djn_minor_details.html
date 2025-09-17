@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Django Render vs Redirect - SAT{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Content styles for the tutorial page */
+    .tutorial-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+    
+    .tutorial-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #3498db;
+    }
+    
+    .tutorial-header h1 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .tutorial-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    /* Table styles for render vs redirect */
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 1rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .comparison-table thead tr {
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: #ffffff;
+        text-align: center;
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+        padding: 15px 18px;
+        border: 1px solid #dddddd;
+        text-align: left;
+        
+    }
+    
+    .comparison-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+        color: blue;
+    }
+    
+    .comparison-table tbody tr:nth-of-type(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .comparison-table tbody tr:last-of-type {
+        border-bottom: 2px solid #2c3e50;
+    }
+    
+    .comparison-table th {
+        text-align: center;
+        font-size: 1.2em;
+    }
+    
+    .code-block {
+        background-color: #2b2b2b;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        overflow-x: auto;
+        margin: 15px 0;
+        line-height: 1.5;
+    }
+    
+    .code-keyword {
+        color: #cc7832;
+    }
+    
+    .code-function {
+        color: #ffc66d;
+    }
+    
+    .code-string {
+        color: #6a8759;
+    }
+    
+    .code-variable {
+        color: #9876aa;
+    }
+    
+    .code-comment {
+        color: #808080;
+    }
+    
+    .note-box {
+        background-color: #e7f3fe;
+        border: 1.5px solid #007bff;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-weight: 600;
+        color: #0056b3;
+    }
+    
+    .done {
+        text-align: center;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #e8f5e9;
+        border-radius: 5px;
+    }
+    
+    /* Navigation buttons */
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+    
+    .nav-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-button:hover {
+        background: linear-gradient(135deg, #4a6491 0%, #2c3e50 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .tutorial-header h1 {
+            font-size: 2rem;
+        }
+        
+        .comparison-table {
+            display: block;
+            overflow-x: auto;
+        }
+        
+        .nav-buttons {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .nav-button {
+            text-align: center;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="tutorial-content">
+        <div class="tutorial-header">
+            <h1>Django Render vs Redirect</h1>
+            <p>Understanding the difference between Django's render() and redirect() functions</p>
+        </div>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th colspan="2">from django.shortcuts import render, redirect</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50%; text-align: center; font-weight: bold;">render</td>
+                    <td style="width: 50%; text-align: center; font-weight: bold;">redirect</td>
+                </tr>
+                <tr>
+                    <td><strong>কাজ:</strong> কোন HTML পেজ দেখানো</td>
+                    <td><strong>কাজ:</strong> ব্যবহারকারীকে অন্য URL এ পাঠানো</td>
+                </tr>
+                <tr>
+                    <td>URL বদলায় না, মানে browser এর address বার একই থাকে।</td>
+                    <td>URL বদলায় মানে নতুন পেজ এ চলে যায়।</td>
+                </tr>
+                <tr>
+                    <td>সাধারণত data দেখাতে বা form দেখাতে use হয়।</td>
+                    <td>সাধারণত form জমা দেওয়ার পর (login/signup এর পর) অন্য পেজ এ পাঠাতে use হয়।</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Example:</strong>
+                        <div class="code-block">
+                            <span class="code-keyword">from</span> django.shortcuts <span class="code-keyword">import</span> render<br>
+                            <br>
+                            <span class="code-keyword">def</span> <span class="code-function">home</span>(request):<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;context = {<span class="code-string">'name'</span>: <span class="code-string">'reza'</span>}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">render</span>(request, <span class="code-string">'home.html'</span>, context)
+                        </div>
+                    </td>
+                    <td>
+                        <strong>Example:</strong>
+                        <div class="code-block">
+                            <span class="code-keyword">from</span> django.shortcuts <span class="code-keyword">import</span> redirect<br>
+                            <br>
+                            <span class="code-keyword">def</span> <span class="code-function">signup_success</span>(request):<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">redirect</span>(<span class="code-string">'login'</span>)<br>
+                            <span class="code-comment"># login হল urls.py থেকে আসা url এর নাম</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note-box">
+            <i class="fas fa-info-circle"></i> Remember: render() displays templates with context, while redirect() sends the user to a different URL.
+        </div>
+
+        <div class="done">Comparison Complete</div>
+        
+        <div class="nav-buttons">
+            <a href="{% url 'program_hub' %}" class="nav-button">
+                <i class="fas fa-arrow-left"></i> Back to Programming Hub
+            </a>
+            <a href="{% url 'index' %}" class="nav-button">
+                Go to Home <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

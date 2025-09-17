@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     # Your App
     'home',
+    'data',
 ]
 
 # -------------------------

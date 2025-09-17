@@ -1,0 +1,502 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bivariate Analysis - SAT{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4e73df;
+        --secondary-color: #6f42c1;
+        --accent-color: #43cbff;
+        --dark-bg: #2c3e50;
+        --light-bg: #f8f9fc;
+        --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    
+    .content-wrapper {
+        width: 100%;
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .analysis-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+        padding: 2.5rem;
+        margin: 0 auto 30px;
+        width: 90%;
+        max-width: 1400px;
+        min-width: 300px;
+        color: #333;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .page-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 15px;
+        font-size: 2.2rem;
+    }
+    
+    .page-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        border-radius: 4px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #4a4a4a;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+    }
+    
+    .form-select {
+        padding: 0.85rem 1.2rem;
+        border: 1px solid #d1d3e2;
+        border-radius: 0.75rem;
+        transition: all 0.3s;
+        font-size: 1rem;
+        background-color: #fff;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+    
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        padding: 0.9rem 2rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        margin-top: 1.5rem;
+        transition: all 0.3s;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(78, 115, 223, 0.35);
+        width: 100%;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(78, 115, 223, 0.45);
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #5a6268, #6c757d);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+    }
+    
+    .alert {
+        border-radius: 0.75rem;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 2rem;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        font-weight: 500;
+    }
+    
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border-left: 5px solid #155724;
+    }
+    
+    .alert-error, .alert-danger {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border-left: 5px solid #721c24;
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        color: #0c5460;
+        border-left: 5px solid #0c5460;
+    }
+    
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        color: #856404;
+        border-left: 5px solid #856404;
+    }
+    
+    .result-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px dashed #e3e6f0;
+    }
+    
+    .result-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+    
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow-x: auto;  
+        box-shadow: 0 0.35rem 1.5rem 0 rgba(58, 59, 69, 0.2);
+        margin-bottom: 1.5rem;
+        width: 100% !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        table-layout: auto;
+        min-width: 100px;
+    }
+    
+    .table th {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        font-weight: 600;
+        padding: 1.1rem 1.2rem;
+        text-align: center;
+        font-size: 1.05rem;
+        border: none;
+    }
+    
+    .table td {
+        padding: 1rem 1.2rem;
+        border-color: #e3e6f0;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(78, 115, 223, 0.04);
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(78, 115, 223, 0.08);
+    }
+    
+    .info-text {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-top: 1.2rem;
+        text-align: center;
+        font-style: italic;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .button-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-navigation {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(78, 115, 223, 0.3);
+        min-width: 140px;
+        justify-content: center;
+    }
+    
+    .btn-navigation:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(78, 115, 223, 0.4);
+        color: white;
+    }
+    
+    .btn-home {
+        background: linear-gradient(135deg, #1cc88a, #17a673);
+    }
+    
+    .btn-home:hover {
+        background: linear-gradient(135deg, #17a673, #1cc88a);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6f42c1, #4e73df);
+        color: #fff !important;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 18px;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 12px rgba(78, 115, 223, 0.2);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #4e73df, #6f42c1);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(78, 115, 223, 0.3);
+    }
+
+    .btn-secondary i {
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+    
+    .text-center.mb-4 {
+        margin-bottom: 0;
+        text-align: center;
+    }
+    
+    .download-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-download {
+        background: linear-gradient(135deg, #36b9cc, #2c9faf);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(54, 185, 204, 0.3);
+        min-width: 140px;
+        justify-content: center;
+    }
+    
+    .btn-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(54, 185, 204, 0.4);
+        color: white;
+        background: linear-gradient(135deg, #2c9faf, #36b9cc);
+    }
+    
+    .btn-download.csv {
+        background: linear-gradient(135deg, #1cc88a, #17a673);
+    }
+    
+    .btn-download.csv:hover {
+        background: linear-gradient(135deg, #17a673, #1cc88a);
+    }
+    
+    .btn-download.pdf {
+        background: linear-gradient(135deg, #e74a3b, #c03526);
+    }
+    
+    .btn-download.pdf:hover {
+        background: linear-gradient(135deg, #c03526, #e74a3b);
+    }
+    
+    .btn-download.word {
+        background: linear-gradient(135deg, #2c9faf, #246a73);
+    }
+    
+    .btn-download.word:hover {
+        background: linear-gradient(135deg, #246a73, #2c9faf);
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .analysis-container {
+            padding: 1.5rem;
+            width: 95%;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+        }
+        
+        .button-container, .download-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-navigation, .btn-download {
+            width: 100%;
+            max-width: 250px;
+        }
+    }
+    
+    .analysis-icon {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+        font-size: 3.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analysis-container">
+    <div class="analysis-icon">
+        <i class="fas fa-chart-scatter"></i>
+    </div>
+    
+    <h2 class="page-title">Bivariate Analysis</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-info-circle me-2"></i>{{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <p class="text-center mb-4">
+        <a href="{% url 'upload_dataset' %}" class="btn btn-secondary">
+            <i class="fas fa-upload me-2"></i>Upload New Dataset
+        </a>
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="fas fa-bullseye me-2"></i>Target Feature
+                </label>
+                <select name="feature1" class="form-select" required>
+                    <option value="">Select a feature</option>
+                    {% for column in columns %}
+                        <option value="{{ column }}" {% if feature1 == column %}selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="fas fa-bullseye me-2"></i>Second Feature
+                </label>
+                <select name="feature2" class="form-select" required>
+                    <option value="">Select a feature</option>
+                    {% for column in columns %}
+                        <option value="{{ column }}" {% if feature2 == column %}selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-calculator me-2"></i>Run Bivariate Analysis
+        </button>
+    </form>
+
+    {% if output %}
+        <div class="result-section">
+            <h3 class="result-title">
+                <i class="fas fa-chart-line me-2"></i>Analysis Result
+            </h3>
+            <div class="table-responsive">
+                {{ output|safe }}
+            </div>
+            <p class="info-text">
+                <i class="fas fa-lightbulb me-2"></i>
+                The table shows the statistical relationship between the two selected features.
+            </p>
+            
+            <!-- Download buttons -->
+            <div class="download-buttons">
+                <a href="{% url 'download_bivariate' format='csv' %}" class="btn-download csv">
+                    <i class="fas fa-file-csv me-2"></i>Download CSV
+                </a>
+                <a href="{% url 'download_bivariate' format='pdf' %}" class="btn-download pdf">
+                    <i class="fas fa-file-pdf me-2"></i>Download PDF
+                </a>
+                <a href="{% url 'download_bivariate' format='word' %}" class="btn-download word">
+                    <i class="fas fa-file-word me-2"></i>Download Word
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Button container with navigation buttons -->
+    <div class="button-container">
+        <a href="/" class="btn-navigation btn-home">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+        <a href="javascript:history.back()" class="btn-navigation">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effect to table rows
+        const tables = document.querySelectorAll('table');
+        tables.forEach(table => {
+            table.classList.add('table-hover');
+        });
+        
+        // Add icons to existing table headers if needed
+        const thElements = document.querySelectorAll('th');
+        thElements.forEach(th => {
+            if (th.textContent.includes('Feature') && !th.querySelector('i')) {
+                th.innerHTML = '<i class="fas fa-columns me-2"></i>' + th.innerHTML;
+            } else if (th.textContent.includes('Value') && !th.querySelector('i')) {
+                th.innerHTML = '<i class="fas fa-calculator me-2"></i>' + th.innerHTML;
+            }
+        });
+    });
+</script>
+{% endblock %}

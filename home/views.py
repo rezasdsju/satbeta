@@ -45,3 +45,5 @@ def django_minor_details_view(request):
     return render(request, 'home/programming/djn_minor_details.html')
 def user_auth_tutorial_view(request):
     return render(request, "home/programming/user_auth.html")
+def ban_ara_eng_layout(request):
+    return render(request,'home/programming/latex/layout_1.html')

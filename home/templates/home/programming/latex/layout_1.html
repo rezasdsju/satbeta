@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LaTeX Document Layout - SAT{% endblock %}
+
+{% block extra_css %}
+<!-- Bootstrap CSS (scoped with custom namespace) -->
+<style>
+  /* Bootstrap namespace wrapper */
+  .bootstrap-wrapper {
+    /* Import Bootstrap styles with custom prefix */
+  }
+  
+  /* We'll manually add only the Bootstrap styles we need with custom prefixes */
+  .bs-container {
+    width: 100%;
+    padding-right: var(--bs-gutter-x, 0.75rem);
+    padding-left: var(--bs-gutter-x, 0.75rem);
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  @media (min-width: 576px) {
+    .bs-container {
+      max-width: 540px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .bs-container {
+      max-width: 720px;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .bs-container {
+      max-width: 960px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .bs-container {
+      max-width: 1140px;
+    }
+  }
+  
+  .bs-row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-.5 * var(--bs-gutter-x));
+    margin-left: calc(-.5 * var(--bs-gutter-x));
+  }
+  
+  .bs-row > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    margin-top: var(--bs-gutter-y);
+  }
+  
+  .bs-col-md-4 {
+    flex: 0 0 auto;
+    width: 33.33333333%;
+  }
+  
+  @media (min-width: 768px) {
+    .bs-col-md-4 {
+      flex: 0 0 auto;
+      width: 33.33333333%;
+    }
+  }
+  
+  .bs-p-4 {
+    padding: 1.5rem !important;
+  }
+  
+  .bs-text-center {
+    text-align: center !important;
+    color: blue;
+  }
+  
+  /* Rest of your custom styles */
+  body {
+      background: #f0f2f5;
+  }
+
+  .container-custom {
+      max-width: 1000px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-top: 20px;
+      margin-left: auto;
+      margin-right: auto;
+  }
+
+  header {
+      background: linear-gradient(90deg, #3498db, #2c3e50);
+      color: white;
+      padding: 30px;
+      text-align: center;
+  }
+
+  h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+  }
+
+  .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+  }
+
+  .intro p {
+      font-size: 1.1rem;
+      color: blue;
+  }
+
+  .code-container {
+      background: #2c3e50;
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      margin-bottom: 30px;
+  }
+
+  .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+  }
+
+  .copy-btn {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+  }
+
+  .copy-btn:hover {
+      background: #2980b9;
+  }
+
+  pre {
+      margin: 0;
+      padding: 0;
+      overflow-x: auto;
+  }
+
+  code {
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #ecf0f1;
+  }
+
+  .feature-card {
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+      background: #f8f9fa;
+      margin-bottom: 20px;
+      color: blue;
+  }
+
+  .feature-card h3 i {
+      margin-right: 10px;
+      color: #3498db;
+  }
+
+  .preview-content {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 30px;
+      min-height: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      position: relative;
+  }
+
+  .bengali-text {
+      font-family: 'Kalpurush', 'Siyam Rupali', Arial, sans-serif;
+      font-size: 1.4rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      text-align: justify;
+      color: black;
+  }
+
+
+  .arabic-text {
+      font-family: 'Amiri', 'Scheherazade New', Arial, sans-serif;
+      font-size: 1.8rem;
+      line-height: 2;
+      margin-bottom: 20px;
+      text-align: right;
+      direction: rtl;
+      color: black;
+  }
+
+  .english-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: black;
+  }
+
+  .footer-name {
+      color: blue; 
+      font-weight: bold;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #e8f4ff;
+      padding: 5px 10px;
+      border: 1px solid #3498db;
+      border-radius: 3px;
+  }
+
+  footer {
+      text-align: center;
+      padding: 20px;
+      background: #2c3e50;
+      color: white;
+  }
+.back-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.back-home-btn,
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, #3498db, #2c3e50);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.back-home-btn:hover,
+.back-btn:hover {
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.back-home-btn i,
+.back-btn i {
+    font-size: 16px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-custom">
+    <header>
+        <h1>LaTeX Document Layout: Bangla, English & Arabic</h1>
+        <p class="subtitle">Complete code for multi-language document with proper formatting</p>
+    </header>
+
+    <section class="intro bs-p-4">
+        <p>This tutorial provides a complete LaTeX document setup for creating documents containing Bengali, Arabic, and English text with proper layout and formatting.</p>
+        <p>The code below is ready to copy and paste directly into Overleaf or any LaTeX editor. It includes proper margin settings, font configuration, and border drawing.</p>
+    </section>
+
+    <div class="code-container">
+        <div class="code-header">
+            <h3><i class="fas fa-code"></i> Complete LaTeX Code</h3>
+            <button class="copy-btn" id="copy-button"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+        </div>
+        <pre><code>\documentclass[20pt]{extarticle}
+% Language & font setup
+\usepackage{polyglossia}
+\setdefaultlanguage{bengali}
+\setotherlanguage{arabic}
+\newfontfamily\bengalifont[Script=Bengali]{Kalpurush}
+\newfontfamily\arabicfont[Script=Arabic]{Amiri-Regular.ttf}
+% Margins
+\usepackage[paperwidth=8in,paperheight=11in,top=0.8in,bottom=0.8in,left=0.8in,right=0.8in]{geometry}
+% TikZ border
+\usepackage{tikz, atbegshi}
+\newcommand{\drawmarginborder}{\begin{tikzpicture}[remember picture, overlay]
+\draw[line width=0.5pt] ([xshift=0.5in,yshift=-0.5in]current page.north west)--([xshift=-0.5in,yshift=-0.5in]current page.north east);
+\draw[line width=0.5pt] ([xshift=0.5in,yshift=0.5in]current page.south west)--([xshift=-0.5in,yshift=0.5in]current page.south east);
+\draw[line width=0.5pt] ([xshift=0.5in,yshift=-0.5in]current page.north west)--([xshift=0.5in,yshift=0.5in]current page.south west);
+\draw[line width=0.5pt] ([xshift=-0.5in,yshift=-0.5in]current page.north east)--([xshift=-0.5in,yshift=0.5in]current page.south east);
+\end{tikzpicture}}
+\AtBeginShipout{\AtBeginShipoutUpperLeft{\drawmarginborder}}
+% Footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhf{}
+\setlength{\footskip}{45pt}
+\fancyfoot[R]{\fcolorbox{blue!60!black}{blue!5}{\textcolor{blue!90!black}{\small \textbf{Your Name}}}}
+\begin{document}
+\setlength{\parindent}{0pt}
+\begin{center}\textarabic{﷽}\end{center}
+\begin{center}\textarabic{بِسْمِ ٱللّٰهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ}\end{center}
+\textbengali{এটি বাংলা বাক্য। এটি পরীক্ষা করার জন্য লেখা হয়েছে।}
+\bigskip
+\textarabic{هذه جملة عربية مكتوبة لاختبار أن النص لا يلمس حدود الهوامش ولكن يبقى داخلها بشكل جميل.}
+\bigskip
+This is an English sentence added here to show English text works fine along with Bengali and Arabic.
+\end{document}</code></pre>
+    </div>
+
+    <section class="bs-container bs-p-4">
+        <div class="bs-row">
+            <div class="bs-col-md-4">
+                <div class="feature-card">
+                    <h3><i class="fas fa-font"></i> Font Setup</h3>
+                    <p>Uses Polyglossia with Kalpurush for Bengali and Amiri for Arabic. Make sure these fonts are installed.</p>
+                </div>
+            </div>
+            <div class="bs-col-md-4">
+                <div class="feature-card">
+                    <h3><i class="fas fa-ruler-combined"></i> Page Layout</h3>
+                    <p>Custom 8x11 inch page with 0.8 inch margins and border at 1 inch for guidance.</p>
+                </div>
+            </div>
+            <div class="bs-col-md-4">
+                <div class="feature-card">
+                    <h3><i class="fas fa-language"></i> Multi-Language Support</h3>
+                    <p>Configured for Bengali (primary), Arabic, and English text with examples.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="output-preview bs-p-4">
+        <h2 class="bs-text-center">Expected Output Preview</h2>
+        <div class="preview-content">
+            <div class="arabic-text bs-text-center">﷽</div>
+            <div class="arabic-text bs-text-center">بِسْمِ ٱللّٰهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+            <div class="bengali-text">এটি বাংলা বাক্য। এটি পরীক্ষা করার জন্য লেখা হয়েছে।</div>
+            <div class="arabic-text">هذه جملة عربية مكتوبة لاختبار أن النص لا يلمس حدود الهوامش ولكن يبقى داخلها بشكل جميل.</div>
+            <div class="english-text">This is an English sentence added here to show English text works fine along with Bengali and Arabic.</div>
+            <div class="footer-name">Your Name</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Copy this code and use directly in Overleaf or any LaTeX editor</p>
+    </footer>
+</div>
+<!-- Back to Home Button -->
+<div class="back-button-container">
+    <a href="{% url 'index' %}" class="back-home-btn">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="fas fa-undo"></i> Back
+    </a>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('copy-button').addEventListener('click', function() {
+        const textArea = document.createElement('textarea');
+        textArea.value = document.querySelector('code').textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(() => { this.innerHTML = originalText; }, 2000);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,585 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Authentication Tutorial - SAT{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #3498db;
+        --secondary: #2c3e50;
+        --accent: #9c27b0;
+        --success: #2e7d32;
+        --warning: #ff9800;
+        --danger: #e74c3c;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --bengali: #9c27b0;
+        --english: #2e7d32;
+    }
+    
+    .tutorial-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .tutorial-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 20px;
+        background: linear-gradient(to right, var(--secondary), var(--primary));
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+    
+    .tutorial-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+        background: linear-gradient(to right, var(--primary), #4a9cdb);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .card-header h2 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    .card-content {
+        padding: 20px;
+        color: #333;
+    }
+    
+    .code-block {
+        background-color: #272822;
+        color: #f8f8f2;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 20px 0;
+        font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        position: relative;
+    }
+    
+    .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background 0.3s;
+    }
+    
+    .copy-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .comment {
+        color: #75715e;
+    }
+    
+    .keyword {
+        color: #f92672;
+    }
+    
+    .string {
+        color: #a6e22e;
+    }
+    
+    .function {
+        color: #66d9ef;
+    }
+    
+    .tag {
+        color: #f92672;
+    }
+    
+    .step {
+        background-color: #e8f4fc;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .note {
+        background-color: #fff3cd;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid var(--warning);
+        color: #856404;
+    }
+    
+    .warning {
+        background-color: #ffeaa7;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid var(--danger);
+    }
+    
+    .file-path {
+        background-color: #e2e3e5;
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.9em;
+    }
+    
+    .bengali {
+        color: var(--bengali);
+        font-weight: 500;
+    }
+    
+    .english {
+        color: var(--english);
+        font-weight: 500;
+    }
+    
+    .tutorial-content ul, .tutorial-content ol {
+        padding-left: 20px;
+        margin: 15px 0;
+    }
+    
+    .tutorial-content li {
+        margin-bottom: 8px;
+    }
+    
+    .language-combo {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .language-combo .bengali {
+        flex: 1;
+        padding-right: 10px;
+    }
+    
+    .language-combo .english {
+        flex: 1;
+        padding-left: 10px;
+        border-left: 1px dashed #ccc;
+    }
+    
+    .tutorial-footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .icon {
+        margin-right: 8px;
+    }
+    
+    .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+    
+    @media (max-width: 768px) {
+        .tutorial-container {
+            padding: 15px;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.3rem;
+        }
+        
+        .code-block {
+            padding: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .language-combo {
+            flex-direction: column;
+        }
+        
+        .language-combo .english {
+            border-left: none;
+            border-top: 1px dashed #ccc;
+            padding-left: 0;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="tutorial-container">
+    <div class="tutorial-header">
+        <h1><i class="fas fa-lock icon"></i>Django User Authentication Tutorial</h1>
+        <p class="subtitle">Learn how to implement user authentication in Django with step-by-step instructions</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('setup-content')">
+            <h2><i class="fas fa-cogs icon"></i>Project Setup (প্রজেক্ট সেটআপ)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="setup-content" class="collapsible-content">
+            <div class="card-content">
+                <p>First, create a new Django project and app if you haven't already:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="comment"># Create a new Django project</span><br>
+                    django-admin startproject myproject<br>
+                    cd myproject<br><br>
+                    
+                    <span class="comment"># Create a home app</span><br>
+                    python manage.py startapp home
+                </div>
+                
+                <div class="language-combo">
+                    <div class="bengali">
+                        <i class="fas fa-info-circle"></i> প্রথমে Django project এবং app তৈরি করুন উপরের commands ব্যবহার করে
+                    </div>
+                    <div class="english">
+                        <i class="fas fa-info-circle"></i> First, create a Django project and app using the commands above
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('template-content')">
+            <h2><i class="fas fa-folder icon"></i>Template Structure (টেমপ্লেট স্ট্রাকচার)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="template-content" class="collapsible-content">
+            <div class="card-content">
+                <p>Create the following directory structure for templates:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    home/<br>
+                    &nbsp;&nbsp;templates/<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;home/<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;registration/<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signup.html<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;login.html<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.html
+                </div>
+                
+                <div class="note">
+                    <h3><i class="fas fa-lightbulb icon"></i>Tip (টিপ)</h3>
+                    <p>Create a <span class="file-path">base.html</span> template for common structure to avoid code repetition.</p>
+                    <p><span class="bengali">একটি</span> base.html <span class="bengali">টেমপ্লেট তৈরি করুন যাতে common structure থাকে, code repetition এড়ানোর জন্য</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('signup-content')">
+            <h2><i class="fas fa-user-plus icon"></i>SignUp Template (সাইনআপ টেমপ্লেট)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="signup-content" class="collapsible-content">
+            <div class="card-content">
+                <p>Create the signup.html file:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="tag">&lt;!DOCTYPE html&gt;</span><br>
+                    <span class="tag">&lt;html lang="en"&gt;</span><br>
+                    <span class="tag">&lt;head&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;meta charset="UTF-8"&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;title&gt;</span>Sign Up<span class="tag">&lt;/title&gt;</span><br>
+                    <span class="tag">&lt;/head&gt;</span><br>
+                    <span class="tag">&lt;body&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;h2&gt;</span>Sign Up<span class="tag">&lt;/h2&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;form method="post"&gt;</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{% csrf_token %}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{{ form.as_p }}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;button type="submit"&gt;</span>Sign Up<span class="tag">&lt;/button&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;/form&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;p&gt;</span>Already have an account? <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;a href="</span>{% url 'login' %}<span class="tag">"&gt;</span>Login here<span class="tag">&lt;/a&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;/p&gt;</span><br>
+                    <span class="tag">&lt;/body&gt;</span><br>
+                    <span class="tag">&lt;/html&gt;</span>
+                </div>
+                
+                <h3>Template Explanation (টেমপ্লেট ব্যাখ্যা):</h3>
+                <ul>
+                    <li><span class="bengali">এই template টি user registration করার form দেখায়</span> (This template displays the user registration form)</li>
+                    <li><span class="keyword">{% csrf_token %}</span> <span class="bengali">CSRF attack থেকে protection দেয়</span> (provides protection against CSRF attacks)</li>
+                    <li><span class="keyword">{{ form.as_p }}</span> <span class="bengali">Django form কে paragraph tags এর মধ্যে render করে</span> (renders the Django form within paragraph tags)</li>
+                    <li><span class="bengali">Form submit করলে</span> POST request হবে <span class="bengali">এবং</span> Django signup view <span class="bengali">handle করবে</span> (When the form is submitted, a POST request will be made and handled by the Django signup view)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('login-content')">
+            <h2><i class="fas fa-sign-in-alt icon"></i>Login Template (লগইন টেমপ্লেট)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="login-content" class="collapsible-content">
+            <div class="card-content">
+                <p>Create the login.html file:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="tag">&lt;!DOCTYPE html&gt;</span><br>
+                    <span class="tag">&lt;html lang="en"&gt;</span><br>
+                    <span class="tag">&lt;head&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;meta charset="UTF-8"&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;title&gt;</span>Login<span class="tag">&lt;/title&gt;</span><br>
+                    <span class="tag">&lt;/head&gt;</span><br>
+                    <span class="tag">&lt;body&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;h2&gt;</span>Login<span class="tag">&lt;/h2&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;form method="post"&gt;</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{% csrf_token %}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{{ form.as_p }}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;button type="submit"&gt;</span>Login<span class="tag">&lt;/button&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;/form&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;p&gt;</span>Don't have an account? <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;a href="</span>{% url 'signup' %}<span class="tag">"&gt;</span>Sign up here<span class="tag">&lt;/a&gt;</span><br>
+                    &nbsp;&nbsp;<span class="tag">&lt;/p&gt;</span><br>
+                    <span class="tag">&lt;/body&gt;</span><br>
+                    <span class="tag">&lt;/html&gt;</span>
+                </div>
+                
+                <h3>Template Explanation (টেমপ্লেট ব্যাখ্যা):</h3>
+                <ul>
+                    <li><span class="bengali">এই template টি user login করার form দেখায়</span> (This template displays the user login form)</li>
+                    <li><span class="bengali">এটি Django এর built-in</span> LoginForm <span class="bengali">ব্যবহার করে</span> (It uses Django's built-in LoginForm)</li>
+                    <li><span class="bengali">User credentials validate করার পর</span> session create <span class="bengali">হবে</span> (After validating user credentials, a session will be created)</li>
+                    <li><span class="bengali">Signup page-এ link যুক্ত আছে নতুন user এর জন্য</span> (There's a link to the signup page for new users)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('views-content')">
+            <h2><i class="fas fa-code icon"></i>Views.py (ভিউস ফাইল)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="views-content" class="collapsible-content">
+            <div class="card-content">
+                <p>Add the signup function to your views.py:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render, redirect<br>
+                    <span class="keyword">from</span> django.contrib.auth <span class="keyword">import</span> login, authenticate<br>
+                    <span class="keyword">from</span> django.contrib.auth.forms <span class="keyword">import</span> UserCreationForm<br>
+                    <span class="keyword">from</span> django.contrib <span class="keyword">import</span> messages<br><br>
+                    
+                    <span class="keyword">def</span> <span class="function">signup</span>(request):<br>
+                    &nbsp;&nbsp;<span class="keyword">if</span> request.method == <span class="string">'POST'</span>:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;form = UserCreationForm(request.POST)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> form.is_valid():<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user = form.save()<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username = form.cleaned_data.get(<span class="string">'username'</span>)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;messages.success(request, f<span class="string">'Account created for {username}!'</span>)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;login(request, user)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> redirect(<span class="string">'index'</span>)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;messages.error(request, <span class="string">'Please correct the error below.'</span>)<br>
+                    &nbsp;&nbsp;<span class="keyword">else</span>:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;form = UserCreationForm()<br>
+                    &nbsp;&nbsp;<span class="keyword">return</span> render(request, <span class="string">'registration/signup.html'</span>, {<span class="string">'form'</span>: form})
+                </div>
+                
+                <h3>View Function Explanation (ভিউ ফাংশন ব্যাখ্যা):</h3>
+                <ul>
+                    <li><span class="bengali">যখন</span> POST request <span class="bengali">আসে</span>, <span class="bengali">তখন form validation করা হয়</span> (When a POST request comes, form validation is performed)</li>
+                    <li><span class="bengali">Form valid হলে user create হয় database-এ</span> (If the form is valid, a user is created in the database)</li>
+                    <li><span class="bengali">User কে authenticate এবং login করা হয়</span> (The user is authenticated and logged in)</li>
+                    <li><span class="bengali">সবশেষে user কে index page-এ redirect করা হয়</span> (Finally, the user is redirected to the index page)</li>
+                    <li><span class="bengali">GET request এর জন্য খালি form show করা হয়</span> (For GET requests, an empty form is shown)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('urls-content')">
+            <h2><i class="fas fa-link icon"></i>URLs Configuration (ইউআরএল কনফিগারেশন)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="urls-content" class="collapsible-content">
+            <div class="card-content">
+                <p>Configure URLs in your urls.py file:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="keyword">from</span> django.urls <span class="keyword">import</span> path<br>
+                    <span class="keyword">from</span> django.contrib.auth <span class="keyword">import</span> views <span class="keyword">as</span> auth_views<br>
+                    <span class="keyword">from</span> . <span class="keyword">import</span> views<br><br>
+                    
+                    urlpatterns = [<br>
+                    &nbsp;&nbsp;path(<span class="string">'signup/'</span>, views.signup, name=<span class="string">'signup'</span>),<br>
+                    &nbsp;&nbsp;path(<span class="string">'login/'</span>, auth_views.LoginView.as_view(template_name=<span class="string">'registration/login.html'</span>), name=<span class="string">'login'</span>),<br>
+                    &nbsp;&nbsp;path(<span class="string">'logout/'</span>, auth_views.LogoutView.as_view(next_page=<span class="string">'index'</span>), name=<span class="string">'logout'</span>),<br>
+                    &nbsp;&nbsp;path(<span class="string">'password-reset/'</span>, auth_views.PasswordResetView.as_view(template_name=<span class="string">'registration/password_reset.html'</span>), name=<span class="string">'password_reset'</span>),<br>
+                    ]
+                </div>
+                
+                <h3>URLs Explanation (ইউআরএল ব্যাখ্যা):</h3>
+                <ul>
+                    <li><span class="file-path">signup/</span> <span class="bengali">route টি আমাদের custom signup view কে handle করে</span> (The signup/ route handles our custom signup view)</li>
+                    <li><span class="file-path">login/</span> <span class="bengali">route টি Django এর built-in</span> LoginView <span class="bengali">ব্যবহার করে</span> (The login/ route uses Django's built-in LoginView)</li>
+                    <li><span class="file-path">logout/</span> <span class="bengali">route টি user কে logout করে এবং index page-এ redirect করে</span> (The logout/ route logs out the user and redirects to the index page)</li>
+                    <li><span class="bengali">প্রতিটি route এর একটি নাম আছে template এ ব্যবহার করার জন্য</span> (Each route has a name for use in templates)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('settings-content')">
+            <h2><i class="fas fa-cog icon"></i>Settings Configuration (সেটিংস কনফিগারেশন)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="settings-content" class="collapsible-content">
+            <div class="card-content">
+                <p>Make sure to configure your settings.py properly:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="comment"># Add your app to INSTALLED_APPS</span><br>
+                    INSTALLED_APPS = [<br>
+                    &nbsp;&nbsp;<span class="string">'django.contrib.admin'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'django.contrib.auth'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'django.contrib.contenttypes'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'django.contrib.sessions'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'django.contrib.messages'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'django.contrib.staticfiles'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'home'</span>,  <span class="comment"># Your app</span><br>
+                    ]<br><br>
+                    
+                    <span class="comment"># Set login redirect URL</span><br>
+                    LOGIN_REDIRECT_URL = <span class="string">'index'</span><br>
+                    LOGOUT_REDIRECT_URL = <span class="string">'index'</span><br><br>
+                    
+                    <span class="comment"># Email backend for password reset (development)</span><br>
+                    EMAIL_BACKEND = <span class="string">'django.core.mail.backends.console.EmailBackend'</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <h3><i class="fas fa-exclamation-circle icon"></i>Important Notes (গুরুত্বপূর্ণ নোট):</h3>
+        <ul>
+            <li><span class="bengali">Template files টি সঠিক location এ create করতে হবে</span> (Template files must be created in the correct location)</li>
+            <li><span class="bengali">Django এর built-in authentication system ব্যবহার করার জন্য</span> django.contrib.auth <span class="bengali">app installed থাকতে হবে</span> (The django.contrib.auth app must be installed to use Django's built-in authentication system)</li>
+            <li><span class="bengali">User authentication এর জন্য database migrate করতে ভুলবেন না</span> (Don't forget to migrate the database for user authentication)</li>
+            <li><span class="bengali">Production environment এ SSL ব্যবহার করুন security এর জন্য</span> (Use SSL in production environment for security)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-header" onclick="toggleContent('testing-content')">
+            <h2><i class="fas fa-vial icon"></i>Testing the Authentication (অথেন্টিকেশন টেস্ট করা)</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="testing-content" class="collapsible-content">
+            <div class="card-content">
+                <p><span class="bengali">নিচের commands গুলো run করে test করুন:</span> (Run the following commands to test:)</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="comment"># Run migrations</span><br>
+                    python manage.py migrate<br><br>
+                    
+                    <span class="comment"># Create a superuser</span><br>
+                    python manage.py createsuperuser<br><br>
+                    
+                    <span class="comment"># Run the development server</span><br>
+                    python manage.py runserver
+                </div>
+                <p><span class="bengali">এরপর browser এ গিয়ে</span> http://127.0.0.1:8000/signup/ <span class="bengali">এ visit করে signup test করুন</span> (Then visit http://127.0.0.1:8000/signup/ in your browser to test signup)</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to toggle content visibility
+    function toggleContent(id) {
+        const content = document.getElementById(id);
+        const icon = content.previousElementSibling.querySelector('.fa-chevron-down');
+        
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        }
+    }
+    
+    // Function to copy code to clipboard
+    function copyCode(button) {
+        const codeBlock = button.parentElement;
+        const textToCopy = codeBlock.innerText.replace('Copy', '');
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+    
+    // Initialize page with first content open
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleContent('setup-content');
+    });
+</script>
+{% endblock %}

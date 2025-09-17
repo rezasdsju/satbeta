@@ -13,5 +13,6 @@ urlpatterns = [
     path("python-child-1/", views.python_child_1_view, name="python_child_1"),
     path("python-runner/", views.python_runner, name="python_runner"),
     path('djn-minor-details/', views.django_minor_details_view, name='djn_minor_details'),
+    path("user-auth-tutorial/", views.user_auth_tutorial_view, name="user_auth"),
 
 ]

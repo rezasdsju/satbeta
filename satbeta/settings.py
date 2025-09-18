@@ -144,6 +144,20 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = '/root/satbeta/media'
 #MEDIA_ROOT = BASE_DIR / 'media'
 
+
+
+
+
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 524288000  # 500 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 524288000  # 500 MB
+
+
+
+
+
+
+
 # -------------------------
 # DEFAULT PRIMARY KEY
 # -------------------------

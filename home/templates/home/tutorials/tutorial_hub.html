@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tutorials Hub | SAT{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Page Content Styles */
+    .container {
+        max-width: 1000px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 20px;
+        flex: 1;
+    }
+    
+    /*
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 20px;
+    }*/
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+    }  
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+    
+    .page-header p {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .category {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+    
+    .category:hover {
+        transform: translateY(-5px);
+    }
+    
+    .category-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .category-header h2 {
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .category-header h2 i {
+        color: #43cbff;
+    }
+    
+    .topics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 15px;
+        padding: 25px;
+    }
+    
+    .topic-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border-left: 4px solid #43cbff;
+        border-right: 4px solid #43cbff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .topic-card:hover {
+        background: linear-gradient(135deg, #43cbff 0%, #9708cc 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .topic-card a {
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 600;
+        display: block;
+        height: 100%;
+        transition: color 0.3s ease;
+    }
+    
+    .topic-card:hover a {
+        color: white;
+    }
+    
+    .physics .topic-card {
+        border-left-color: #9708cc;
+    }
+    
+    .back-button {
+        display: inline-block;
+        margin: 30px auto;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 200px;
+        justify-content: center;
+    }
+    
+    .back-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #4a6491 0%, #2c3e50 100%);
+    }
+    
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    
+    /* Responsive styles */
+    @media screen and (max-width: 768px) {
+        .topics-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .category-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .topic-card {
+            padding: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Tutorials Hub</h1>
+        <p>Explore our collection of tutorials on various topics. Click on any topic to start learning.</p>
+    </div>
+    
+    <div class="category">
+        <div class="category-header">
+            <h2><i class="fas fa-chart-line"></i> Statistics and Data Science</h2>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card">
+                <a href="{% url 'conf_matrix' %}">Confusion Matrix</a>
+            </div>
+            <!--
+            <div class="topic-card">
+                <a href='#'>K-Nearest Neighbors (KNN)</a>
+            </div> 
+            <div class="topic-card">
+                <a href='#'>Artificial Neural Networks (ANN)</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Random Forest</a>
+            </div>-->
+            <div class="topic-card">
+                <a href='#'>Decision Tree</a>
+            </div>
+
+
+            <!--
+            <div class="topic-card">
+                <a href='#'>Fuzzy C-means Clustering</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Support Vector Machine</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>K-means Clustering</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Elbow Method</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>CART Algorithm</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Naive Bayes</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Bayesian Statistics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Inferential Statistics</a>
+            </div>-->
+        </div>
+    </div>
+    
+
+    <!--
+    <div class="category physics">
+        <div class="category-header">
+            <h2><i class="fas fa-atom"></i> HSC Physics</h2>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card">
+                <a href='#'>Vector Physics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Dynamics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Newtonian Mechanics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Work, Power and Energy</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Gravitation and Gravity</a>
+            </div>
+            <div class="topic-card">
+                <a href='surface_tension.html'>Structural Properties of Matter</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Periodic Motion</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Wave Mechanics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Ideal Gas Law</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Thermodynamics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Electrostatics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Current Electricity</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Magnetism</a>
+            </div>
+        </div>
+    </div>-->
+    
+    <!--
+    <div class="category physics">
+        <div class="category-header">
+            <h2><i class="fas fa-language"></i>English</h2>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card">
+                <a href='#'>Narration</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Dynamics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Newtonian Mechanics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Work, Power and Energy</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Gravitation and Gravity</a>
+            </div>
+            <div class="topic-card">
+                <a href='surface_tension.html'>Structural Properties of Matter</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Periodic Motion</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Wave Mechanics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Ideal Gas Law</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Thermodynamics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Electrostatics</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Current Electricity</a>
+            </div>
+            <div class="topic-card">
+                <a href='#'>Magnetism</a>
+            </div>
+        </div>
+    </div>-->
+    
+    <div class="button-container">
+        <a href='{% url "index" %}' class='back-button'>
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add animation to topic cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const topicCards = document.querySelectorAll('.topic-card');
+        
+        topicCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.05)';
+            });
+        });
+    });
+</script>
+{% endblock %}

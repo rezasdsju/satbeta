@@ -16,4 +16,7 @@ urlpatterns = [
     path("user-auth-tutorial/", views.user_auth_tutorial_view, name="user_auth"),
     path('layout_1/',views.ban_ara_eng_layout,name='layout_1'),
 
+    path('tutorials-hub/', views.tutorials_hub_view, name='tutorial_hub'),
+    path('confusion-matrix/', views.conf_matrix_view, name='conf_matrix'),
+
 ]

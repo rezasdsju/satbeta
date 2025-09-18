@@ -47,3 +47,7 @@ def user_auth_tutorial_view(request):
     return render(request, "home/programming/user_auth.html")
 def ban_ara_eng_layout(request):
     return render(request,'home/programming/latex/layout_1.html')
+def tutorials_hub_view(request):
+    return render(request, 'home/tutorials/tutorial_hub.html')
+def conf_matrix_view(request):
+    return render(request, 'home/tutorials/conf_matrix.html')

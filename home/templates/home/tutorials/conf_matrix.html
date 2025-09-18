@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+
+{% block title %}Confusion Matrix Examples - SAT{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Content styles - Fixed background issue */
+    /*
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+    }*/
+    
+    #content-wrapper {
+        margin-top: 70px;
+        padding: 20px;
+        max-width: 1000px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: white;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        min-height: calc(100vh - 70px);
+    }
+    
+    h1, h2, h3 {
+        color: #2c3e50;
+    }
+    
+    h1 {
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-top: 20px;
+    }
+    
+    h2 {
+        color: #2980b9;
+        margin-top: 30px;
+    }
+    
+    .maltese-cross {
+        font-size: 3.2rem;
+        color: #b22222;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .conf-matrix-title {
+        color: #003366;
+        font-size: 2.5rem;
+        font-weight: 900;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .example-header {
+        color: #d9534f;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin: 30px 0 20px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #d9534f;
+    }
+    
+    table {
+        border-collapse: collapse;
+        margin: 20px 0;
+        width: 100%;
+        max-width: 650px;
+        box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        background-color: white;
+    }
+    
+    th, td {
+        border: 2px solid #333;
+        padding: 12px;
+        text-align: center;
+        color: red;
+    }
+    
+    th {
+        background-color: rgba(0, 255, 255, 0.6);
+        font-weight: bold;
+        color: #333;
+    }
+    
+    caption {
+        caption-side: bottom;
+        margin-top: 10px;
+        font-weight: bold;
+        color: #007bff;
+        font-size: 1.1rem;
+    }
+    
+    .formula {
+        background: #e8f4f8;
+        border-left: 4px solid #007bff;
+        padding: 15px;
+        margin: 20px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.1rem;
+        color: #2c3e50;
+        border-radius: 5px;
+    }
+    
+    .formula span {
+        font-weight: 700;
+        color: #0056b3;
+    }
+    
+    .highlight-red {
+        color: #d9534f;
+        font-weight: 700;
+    }
+    
+    .highlight-blue {
+        color: #007bff;
+        font-weight: 700;
+    }
+    
+    .btn-link {
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-link:hover {
+        background-color: #0056b3;
+    }
+    
+    .note-box {
+        background-color: #e7f3fe;
+        border: 1.5px solid #007bff;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-weight: 600;
+        color: #0056b3;
+    }
+    
+    .result-solution {
+        color: #28a745;
+        font-weight: 700;
+        margin-top: 15px;
+    }
+    
+    .align-right {
+        text-align: right;
+    }
+    
+    .formula-block {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.1rem;
+        margin: 20px 0;
+        color: #2c3e50;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #28a745;
+    }
+    
+    .formula-block strong {
+        color: #2c3e50;
+    }
+    
+    .formula-block .value {
+        font-weight: 900;
+        color: #28a745;
+    }
+    
+    .done {
+        text-align: center;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #e8f5e9;
+        border-radius: 5px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .conf-matrix-title {
+            font-size: 2rem;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        table {
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 8px;
+        }
+        
+        .formula, .formula-block {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .conf-matrix-title {
+            font-size: 1.8rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+        }
+        
+        table {
+            font-size: 0.8rem;
+        }
+        
+        th, td {
+            padding: 6px;
+        }
+    }
+    
+    .back-button {
+        text-align: center;
+        margin: 30px 0;
+    }
+    
+    .back-button a {
+        display: inline-block;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-button a:hover {
+        background: linear-gradient(135deg, #4a6491 0%, #2c3e50 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-wrapper">
+    <!--<div class="maltese-cross" aria-label="Maltese Cross">&#10022;</div>-->
+    <h1 class="conf-matrix-title" id="confusionmatrixa" title="Confusion Matrix">
+        <a href="#" style="color:inherit; text-decoration:none;">Confusion Matrix</a>
+    </h1>
+
+    <div class="example-header" id="conexample1">
+        &#x2794; <a href="#" style="color:inherit; text-decoration:none;">Example-1:</a>
+    </div>
+
+    <!-- Confusion matrix numeric form -->
+    <table aria-label="Multiclass confusion matrix data">
+        <tbody>
+            <tr>
+                <td style="text-align:right; font-weight: 700; vertical-align: middle;">Dog</td>
+                <td style="width: 5em; text-align:center;">23</td>
+                <td style="width: 5em; text-align:center;">12</td>
+                <td style="width: 5em; text-align:center;">7</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight: 700; vertical-align: middle;">Cat</td>
+                <td style="text-align:center;">11</td>
+                <td style="text-align:center;">29</td>
+                <td style="text-align:center;">13</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight: 700; vertical-align: middle;">Rabbit</td>
+                <td style="text-align:center;">4</td>
+                <td style="text-align:center;">10</td>
+                <td style="text-align:center;">24</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Confusion matrix with header -->
+    <table aria-label="Multiclass Confusion Matrix" role="table">
+        <thead>
+            <tr>
+                <th rowspan="2" style="width: 8em;">Actual</th>
+                <th colspan="3">Predicted</th>
+            </tr>
+            <tr>
+                <th>Dog</th>
+                <th>Cat</th>
+                <th>Rabbit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Dog</th>
+                <td>23</td>
+                <td>12</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <th scope="row">Cat</th>
+                <td>11</td>
+                <td>29</td>
+                <td>13</td>
+            </tr>
+            <tr>
+                <th scope="row">Rabbit</th>
+                <td>4</td>
+                <td>10</td>
+                <td>24</td>
+            </tr>
+        </tbody>
+        <caption>Multiclass Confusion Matrix</caption>
+    </table>
+
+    <p><strong>Calculate the value of Accuracy Rate, Sensitivity and Specificity.</strong></p>
+
+    <!--<div class="note-box" role="note" aria-label="Source Link">
+        &#10060; <span class="highlight-red">Source:</span> 
+        <a href="https://youtu.be/OC8s9TCQeqQ?si=NWXGo3JnS1hV2BL1" target="_blank" rel="noopener" style="color:#d9534f; font-weight:bold; text-decoration:none;">
+            Click On &#9992;
+        </a>
+    </div>-->
+
+    <table aria-label="Per-Class Binary Confusion Metrics Table">
+        <thead>
+            <tr>
+                <th></th><th>TP</th><th>TN</th><th>FP</th><th>FN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Dog</th>
+                <td>23</td>
+                <td>29 + 13 + 10 + 24 = 76</td>
+                <td>11 + 4 = 15</td>
+                <td>12 + 7 = 19</td>
+            </tr>
+            <tr>
+                <th scope="row">Cat</th>
+                <td>29</td>
+                <td>23 + 7 + 4 + 24 = 58</td>
+                <td>12 + 10 = 22</td>
+                <td>11 + 13 = 24</td>
+            </tr>
+            <tr>
+                <th scope="row">Rabbit</th>
+                <td>24</td>
+                <td>23 + 12 + 11 + 29 = 75</td>
+                <td>7 + 13 = 20</td>
+                <td>4 + 10 = 14</td>
+            </tr>
+        </tbody>
+        <caption>Per-Class Binary Confusion Metrics Table</caption>
+    </table>
+
+    <div class="formula-block" role="region" aria-label="Accuracy for Dog">
+        <p><strong>Accuracy for Dog</strong></p>
+        <p><code>Accuracy = (TP + TN) / (TP + TN + FP + FN)</code></p>
+        <p><code>= (23 + 76) / (23 + 76 + 15 + 19)</code></p>
+        <p><code>= 99 / 133 = 0.744 = 74.4%</code></p>
+    </div>
+
+    <div class="formula-block" role="region" aria-label="Sensitivity for Cat">
+        <p><strong>Sensitivity for Cat</strong></p>
+        <p><code>Sensitivity = TP / (TP + FN)</code></p>
+        <p><code>= 29 / (29 + 24) = 0.54 = 54%</code></p>
+    </div>
+
+    <div class="formula-block" role="region" aria-label="Specificity for Rabbit">
+        <p><strong>Specificity for Rabbit</strong></p>
+        <p><code>Specificity = TN / (TN + FP)</code></p>
+        <p><code>= 75 / (75 + 20) = 0.78 = 78%</code></p>
+    </div>
+
+    <h2 id="conexample2">&#x2713; <a href="#cexm2" style="color:inherit; text-decoration:none;">Confusion Matrix Example-2:</a></h2>
+
+    <!--<div class="note-box">
+        &#10060; <span style="color: #0056b3; font-weight: 700;">Source: YouTube Video- </span>
+        <a href="https://youtu.be/ZdfloOxXeZ4?si=wo4w3fRgM-oHBFIY" target="_blank" rel="noopener" style="color:#007bff; font-weight:bold; text-decoration:none;">
+            Click on &#9992;
+        </a>
+    </div>-->
+
+    <p><strong>Consider the following 3-class confusion matrix. Calculate precision and recall per class.<br> Also calculate weighted average precision and recall for classifier.</strong></p>
+
+    <table aria-label="Confusion Matrix Example 2">
+        <tbody>
+            <tr>
+                <td></td>
+                <td>15</td>
+                <td>2</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>15</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>3</td>
+                <td>45</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table aria-label="Confusion Matrix with totals">
+        <thead>
+            <tr>
+                <th></th><th>A</th><th>B</th><th>C</th><th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">A</th>
+                <td>15</td><td>2</td><td>3</td><td>20</td>
+            </tr>
+            <tr>
+                <th scope="row">B</th>
+                <td>7</td><td>15</td><td>8</td><td>30</td>
+            </tr>
+            <tr>
+                <th scope="row">C</th>
+                <td>2</td><td>3</td><td>45</td><td>50</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td>24</td><td>20</td><td>56</td><td>100</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="formula">
+        <p><span>Precision = Correctly Predicted / Total Predicted</span></p>
+        <p><strong>Precision of Class A</strong> = 15 / 24 = 0.625</p>
+        <p><strong>Precision of Class B</strong> = 15 / 20 = 0.75</p>
+        <p><strong>Precision of Class C</strong> = 45 / 56 = 0.80</p>
+    </div>
+
+    <div class="formula">
+        <p><span>Recall = Correctly Classified / Actual</span></p>
+        <p><strong>Recall of Class A</strong> = 15 / 20 = 0.75</p>
+        <p><strong>Recall of Class B</strong> = 15 / 30 = 0.50</p>
+        <p><strong>Recall of Class C</strong> = 45 / 50 = 0.90</p>
+    </div>
+
+    <div class="formula">
+        <p><span>Accuracy = Total Correctly Classified / Total Actual</span></p>
+        <p>Accuracy of Classifier = (15 + 15 + 45) / 100 = 0.75</p>
+    </div>
+
+    <p>Actual Class A instances = 20 / 100 = 0.2</p>
+    <p>Actual Class B instances = 30 / 100 = 0.3</p>
+    <p>Actual Class C instances = 50 / 100 = 0.5</p>
+
+    <div class="formula-block" aria-label="Weighted average precision calculation">
+        <p><strong>Weighted average precision = </strong></p>
+        <p style="margin-left: 1em;">
+            (0.2 × 0.625) + (0.3 × 0.75) + (0.5 × 0.80) = <span class="value">0.75</span>
+        </p>
+    </div>
+
+    <div class="formula-block" aria-label="Weighted average recall calculation">
+        <p><strong>Weighted average recall = </strong></p>
+        <p style="margin-left: 1em;">
+            (0.2 × 0.75) + (0.3 × 0.5) + (0.5 × 0.90) = <span class="value">0.75</span>
+        </p>
+    </div>
+
+    <div class="done">Solution Done</div>
+    <div class="back-button"><a href='{% url "tutorial_hub" %}'>Back to Tutorials</a></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Any additional JavaScript specific to this page can go here
+</script>
+{% endblock %}

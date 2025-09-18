@@ -51,3 +51,7 @@ def tutorials_hub_view(request):
     return render(request, 'home/tutorials/tutorial_hub.html')
 def conf_matrix_view(request):
     return render(request, 'home/tutorials/conf_matrix.html')
+def pdf_hub_view(request):
+    return render(request, 'home/pdf/pdf_hub.html')
+def vector_pdf_view(request):
+    return render(request, 'home/pdf/vec_pdf.html')

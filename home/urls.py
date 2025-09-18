@@ -19,4 +19,7 @@ urlpatterns = [
     path('tutorials-hub/', views.tutorials_hub_view, name='tutorial_hub'),
     path('confusion-matrix/', views.conf_matrix_view, name='conf_matrix'),
 
+    path('pdf-hub/', views.pdf_hub_view, name='pdf_hub'),
+    path('vector-pdf/', views.vector_pdf_view, name='vec_pdf'),
+
 ]

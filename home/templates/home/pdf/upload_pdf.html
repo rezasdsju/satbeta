@@ -15,7 +15,7 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="{{ form.title.id_for_label }}">Title</label>
+                <label for="{{ form.title.id_for_label }}">Title *</label>
                 {{ form.title }}
                 {{ form.title.errors }}
             </div>
@@ -30,10 +30,18 @@
                 <label for="{{ form.category.id_for_label }}">Category</label>
                 {{ form.category }}
                 {{ form.category.errors }}
+                <small>Select an existing category or create a new one below.</small>
             </div>
             
             <div class="form-group">
-                <label for="{{ form.pdf_file.id_for_label }}">PDF File</label>
+                <label for="{{ form.new_category.id_for_label }}">Create New Category</label>
+                {{ form.new_category }}
+                {{ form.new_category.errors }}
+                <small>Enter a name for a new category if you don't see an appropriate one above.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.pdf_file.id_for_label }}">PDF File *</label>
                 {{ form.pdf_file }}
                 {{ form.pdf_file.errors }}
                 <small>Only PDF files are allowed. Maximum size: 10MB.</small>
@@ -51,6 +59,28 @@
 </div>
 
 <style>
+    .container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    
+    .page-header p {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+    
     .upload-form {
         background: white;
         padding: 30px;
@@ -83,6 +113,8 @@
     .form-group small {
         color: #6c757d;
         font-size: 0.85rem;
+        display: block;
+        margin-top: 5px;
     }
     
     .btn-primary {
@@ -94,11 +126,49 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
+        display: block;
+        width: 100%;
+        margin-top: 20px;
     }
     
     .btn-primary:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .back-button {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .back-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: #43cbff;
+    }
+    
+    /* Error messages styling */
+    .errorlist {
+        color: #dc3545;
+        margin: 5px 0 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.85rem;
     }
 </style>
 {% endblock %}

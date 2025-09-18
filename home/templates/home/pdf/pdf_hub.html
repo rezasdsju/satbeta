@@ -5,9 +5,117 @@
 
 {% block extra_css %}
 <style>
-    /* আপনার existing styles এখানে থাকবে */
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+    }
     
-    /* নতুন styles যোগ করুন */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    
+    .page-header p {
+        color: #6c757d;
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .upload-button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .upload-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .category {
+        background: #f8f9fa;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+    
+    .category:hover {
+        transform: translateY(-5px);
+    }
+    
+    .category-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .category-header h2 {
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+    }
+    
+    .category-header h2 i {
+        color: #43cbff;
+    }
+    
+    .topics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 15px;
+        padding: 25px;
+    }
+    
+    .topic-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border-left: 4px solid #43cbff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .topic-card:hover {
+        background: linear-gradient(135deg, #43cbff 0%, #9708cc 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .topic-card a {
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 600;
+        display: block;
+        height: 100%;
+        transition: color 0.3s ease;
+    }
+    
+    .topic-card:hover a {
+        color: white;
+    }
+    
     .uploaded-pdfs {
         margin-bottom: 30px;
     }
@@ -53,6 +161,44 @@
         color: #6c757d;
         font-style: italic;
     }
+    
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .back-button {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .back-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: #43cbff;
+    }
+    
+    /* Responsive styles */
+    @media screen and (max-width: 768px) {
+        .topics-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -66,21 +212,21 @@
         </a>
     </div>
 
-    <!-- User Uploaded PDFs Section যোগ করুন এখানে -->
+    <!-- User Uploaded PDFs Section -->
     <div class="category">
         <div class="category-header">
             <h2><i class="fas fa-file-upload"></i> User Uploaded PDFs</h2>
         </div>
         <div class="uploaded-pdfs">
-            {% if pdfs %}
-                {% for pdf in pdfs %}
+            {% if user_pdfs %}
+                {% for pdf in user_pdfs %}
                 <div class="pdf-item">
                     <a href="{{ pdf.pdf_file.url }}" target="_blank">
                         <i class="fas fa-file-pdf"></i> {{ pdf.title }}
                     </a>
                     <div class="pdf-meta">
                         Uploaded by: {{ pdf.user.username }} | 
-                        Category: {{ pdf.get_category_display }} | 
+                        Category: {{ pdf.category.name|default:"Uncategorized" }} | 
                         Date: {{ pdf.upload_date|date:"M d, Y" }}
                     </div>
                     {% if pdf.description %}
@@ -96,28 +242,32 @@
         </div>
     </div>
 
-    <!-- আপনার existing categories এখানে থাকবে -->
+    <!-- Categories Section -->
+    {% for category in categories %}
     <div class="category">
         <div class="category-header">
-            <h2><i class="fas fa-chart-line"></i> Statistics and Data Science</h2>
+            <h2><i class="{{ category.icon }}"></i> {{ category.name }}</h2>
         </div>
         <div class="topics-grid">
-            <div class="topic-card">
-                <a href="{% static 'pdfs/Data_Mining.pdf' %}" target="_blank">Data Mining</a>
-            </div>
+            {% for pdf in category.userpdf_set.all %}
+                {% if pdf.is_approved %}
+                <div class="topic-card">
+                    <a href="{{ pdf.pdf_file.url }}" target="_blank">
+                        <i class="fas fa-file-pdf"></i> {{ pdf.title }}
+                    </a>
+                    <div class="pdf-meta">
+                        By: {{ pdf.user.username }} | {{ pdf.upload_date|date:"M d, Y" }}
+                    </div>
+                </div>
+                {% endif %}
+            {% empty %}
+                <div class="no-pdfs">
+                    <p>No PDFs in this category yet.</p>
+                </div>
+            {% endfor %}
         </div>
     </div>
-    
-    <div class="category physics">
-        <div class="category-header">
-            <h2><i class="fas fa-atom"></i> HSC Physics</h2>
-        </div>
-        <div class="topics-grid">
-            <div class="topic-card">
-                <a href="{% url 'vec_pdf' %}">Vector Physics</a>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
     
     <div class="button-container">
         <a href="{% url 'index' %}" class='back-button'>

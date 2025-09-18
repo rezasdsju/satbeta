@@ -67,6 +67,7 @@ def conf_matrix_view(request):
 """
 def pdf_hub_view(request):
     return render(request, 'home/pdf/pdf_hub.html')"""
+"""
 def pdf_hub_view(request):
     # শুধু approved PDFs দেখাবে
     pdfs = UserPDF.objects.filter(is_approved=True)
@@ -95,9 +96,43 @@ def upload_pdf(request):
     else:
         form = UserPDFForm()
     return render(request, 'home/pdf/upload_pdf.html', {'form': form})
-
+"""
 """
 def pdf_hub(request):
     pdfs = UserPDF.objects.all()
     return render(request, 'home/pdf/pdf_hub.html', {'pdfs': pdfs})"""
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import UserPDFForm
+from .models import UserPDF, PDFCategory
+
+def pdf_hub_view(request):
+    # শুধু approved PDFs দেখাবে, ক্যাটাগরি অনুসারে গ্রুপ করে
+    categories = PDFCategory.objects.all().prefetch_related('userpdf_set')
+    
+    # User uploaded PDFs (approved ones)
+    user_pdfs = UserPDF.objects.filter(is_approved=True)
+    
+    return render(request, 'home/pdf/pdf_hub.html', {
+        'categories': categories,
+        'user_pdfs': user_pdfs
+    })
+
+def vector_pdf_view(request):
+    return render(request, 'home/pdf/vec_pdf.html')
+
+@login_required
+def upload_pdf(request):
+    if request.method == 'POST':
+        form = UserPDFForm(request.POST, request.FILES)
+        if form.is_valid():
+            pdf = form.save(commit=False)
+            pdf.user = request.user
+            pdf.save()
+            return redirect('pdf_hub')
+    else:
+        form = UserPDFForm()
+    
+    return render(request, 'home/pdf/upload_pdf.html', {'form': form})
 

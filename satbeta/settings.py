@@ -135,7 +135,9 @@ USE_TZ = True
 # STATIC & MEDIA FILES
 # -------------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+#STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = '/var/www/satbeta/staticfiles'
+
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'

@@ -55,3 +55,33 @@ def pdf_hub_view(request):
     return render(request, 'home/pdf/pdf_hub.html')
 def vector_pdf_view(request):
     return render(request, 'home/pdf/vec_pdf.html')
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import UserPDFForm
+from .models import UserPDF
+
+@login_required
+def upload_pdf(request):
+    if request.method == 'POST':
+        form = UserPDFForm(request.POST, request.FILES)
+        if form.is_valid():
+            pdf = form.save(commit=False)
+            pdf.user = request.user
+            pdf.save()
+            return redirect('pdf_hub')
+    else:
+        form = UserPDFForm()
+    return render(request, 'home/pdf/upload_pdf.html', {'form': form})
+
+def pdf_hub(request):
+    pdfs = UserPDF.objects.all()
+    return render(request, 'home/pdf/pdf_hub.html', {'pdfs': pdfs})
+

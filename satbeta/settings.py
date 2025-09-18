@@ -141,7 +141,8 @@ STATIC_ROOT = '/var/www/satbeta/staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = '/root/satbeta/media'
+#MEDIA_ROOT = BASE_DIR / 'media'
 
 # -------------------------
 # DEFAULT PRIMARY KEY

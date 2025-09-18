@@ -193,6 +193,14 @@
 
 
             </div>
+<div class="topics-grid">
+    {% for pdf in pdfs %}
+    <div class="topic-card">
+        <a href="{{ pdf.pdf_file.url }}" target="_blank">{{ pdf.title }}</a>
+    </div>
+    {% endfor %}
+</div>
+
 
             <!--
             <div class="topic-card">

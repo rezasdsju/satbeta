@@ -22,4 +22,8 @@ urlpatterns = [
     path('pdf-hub/', views.pdf_hub_view, name='pdf_hub'),
     path('vector-pdf/', views.vector_pdf_view, name='vec_pdf'),
 
+
+    path('pdf/upload/', views.upload_pdf, name='upload_pdf'),
+    path('pdf/hub/', views.pdf_hub, name='pdf_hub'),
+
 ]

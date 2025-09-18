@@ -32,7 +32,7 @@ class ResultSheet(models.Model):
     def __str__(self):
         return f"{self.student_name} - {self.semester}"      
     
-
+"""
 class UserPDF(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
@@ -41,5 +41,32 @@ class UserPDF(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.user.username}"
+"""
+
+
+# home/models.py
+from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
+
+class UserPDF(models.Model):
+    CATEGORY_CHOICES = [
+        ('statistics', 'Statistics and Data Science'),
+        ('physics', 'HSC Physics'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='statistics')
+    pdf_file = models.FileField(
+        upload_to='user_pdfs/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    is_approved = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.title
 
    

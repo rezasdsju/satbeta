@@ -1,7 +1,7 @@
+# home/urls.py
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
-
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -19,11 +19,8 @@ urlpatterns = [
     path('tutorials-hub/', views.tutorials_hub_view, name='tutorial_hub'),
     path('confusion-matrix/', views.conf_matrix_view, name='conf_matrix'),
 
+    # PDF-related URLs - শুধু একটি pdf_hub রাখুন
     path('pdf-hub/', views.pdf_hub_view, name='pdf_hub'),
     path('vector-pdf/', views.vector_pdf_view, name='vec_pdf'),
-
-
     path('pdf/upload/', views.upload_pdf, name='upload_pdf'),
-    path('pdf/hub/', views.pdf_hub, name='pdf_hub'),
-
 ]

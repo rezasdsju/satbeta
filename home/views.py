@@ -17,6 +17,19 @@ from reportlab.lib import colors
 from .models import Student, Exam, ResultSheet
 from django.utils import timezone
 
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import UserPDFForm
+from .models import UserPDF
+
 def index(request):
     return render(request, 'home/index.html')
 
@@ -51,8 +64,13 @@ def tutorials_hub_view(request):
     return render(request, 'home/tutorials/tutorial_hub.html')
 def conf_matrix_view(request):
     return render(request, 'home/tutorials/conf_matrix.html')
+"""
 def pdf_hub_view(request):
-    return render(request, 'home/pdf/pdf_hub.html')
+    return render(request, 'home/pdf/pdf_hub.html')"""
+def pdf_hub_view(request):
+    # শুধু approved PDFs দেখাবে
+    pdfs = UserPDF.objects.filter(is_approved=True)
+    return render(request, 'home/pdf/pdf_hub.html', {'pdfs': pdfs})
 def vector_pdf_view(request):
     return render(request, 'home/pdf/vec_pdf.html')
 
@@ -63,10 +81,7 @@ def vector_pdf_view(request):
 
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import UserPDFForm
-from .models import UserPDF
+
 
 @login_required
 def upload_pdf(request):
@@ -81,7 +96,8 @@ def upload_pdf(request):
         form = UserPDFForm()
     return render(request, 'home/pdf/upload_pdf.html', {'form': form})
 
+"""
 def pdf_hub(request):
     pdfs = UserPDF.objects.all()
-    return render(request, 'home/pdf/pdf_hub.html', {'pdfs': pdfs})
+    return render(request, 'home/pdf/pdf_hub.html', {'pdfs': pdfs})"""
 

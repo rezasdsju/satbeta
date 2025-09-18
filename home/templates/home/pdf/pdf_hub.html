@@ -180,7 +180,13 @@
     <div class="page-header">
         <h1>PDF Hub</h1>
         <p>Explore collection of pdfs on various topics. Click on any topic to download.</p>
+        <!-- Upload Button যোগ করুন এখানে -->
+        <a href="{% url 'upload_pdf' %}" class="upload-button">
+            <i class="fas fa-upload"></i> Upload PDF
+        </a>
     </div>
+
+
     
     <div class="category">
         <div class="category-header">
@@ -193,13 +199,7 @@
 
 
             </div>
-<div class="topics-grid">
-    {% for pdf in pdfs %}
-    <div class="topic-card">
-        <a href="{{ pdf.pdf_file.url }}" target="_blank">{{ pdf.title }}</a>
-    </div>
-    {% endfor %}
-</div>
+
 
 
             <!--

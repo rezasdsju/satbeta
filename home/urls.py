@@ -44,7 +44,7 @@ urlpatterns = [
 
 
     path('mcq_hub/', views.mcq_hub_view, name='mcq_hub'),
-    path('vector_main_mcq/', views.vector_pdf_view, name='vector_main_mcq'),
+    path('vector_main_mcq/', views.vector_mcq_view, name='vector_main_mcq'),
     path('narration/', views.narration_view, name='narration'),
     path('vocabulary/', views.vocabulary_view, name='vocab_main'),
     path('bcs_english/', views.bcs_english_view, name='bcs_english'),

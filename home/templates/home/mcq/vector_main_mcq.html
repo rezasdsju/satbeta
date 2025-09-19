@@ -1,0 +1,1323 @@
+  {% extends 'base.html' %}
+
+  {% block title %}Vector MCQ Exam | SAT{% endblock %}
+
+
+  {% block extra_css %}
+  <style>
+    /* Your existing CSS remains the same */
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#22c55e;
+      --accent-weak:#16a34a;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --info:#60a5fa;
+      --ring: rgba(34,197,94,0.4);
+    }  
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: linear-gradient(180deg, #0b1220, var(--bg));
+      color: var(--text);
+    }
+    .container { max-width: 950px; width: 100%; margin: 0 auto; padding: 0 20px; flex: 1; }
+    header{ width: 72%; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(2,6,23,0.92), rgba(2,6,23,0.6));
+      border-bottom: 1px solid rgba(148,163,184,0.15);
+    }
+    .header-inner{ display:flex; align-items:center; gap:16px; padding:14px 24px;}
+    .brand{ font-weight:700; letter-spacing:0.3px; }
+    .pill{ padding: 6px 10px; background: #0b1324; border:1px solid rgba(148,163,184,0.15); border-radius: 9999px; color: var(--muted); font-size:12px; }
+    .timer{ margin-left:auto; font-variant-numeric: tabular-nums; font-weight:700; padding:6px 12px; border-radius:10px; background:#0b1a2f; border:1px solid rgba(96,165,250,0.3); color:#bfdbfe; }
+    .controls{ display:flex; gap:8px; }
+    button{ background: #0b1220; color: var(--text); border:1px solid rgba(148,163,184,0.2); border-radius:12px; padding:10px 14px; cursor:pointer; font-weight:600;}
+    button:hover{ border-color: rgba(148,163,184,0.35); }
+    button.primary{ background: linear-gradient(180deg, var(--accent), var(--accent-weak)); border-color: transparent; color:#052e16; }
+    button.primary:hover{ filter: brightness(0.98); }
+
+    .card{ background: #0b1220; border:1px solid rgba(148,163,184,0.15); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
+    .intro{ padding: 20px; margin-top: 16px; }
+    .intro p{ color: var(--muted); margin:8px 0 0; }
+
+    .meta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; }
+    .meta .chip{ font-size: 13px; padding:6px 10px; border-radius:8px; background:#091225; border:1px solid rgba(148,163,184,0.2); color:#cbd5e1 }
+
+    .question{ padding: 20px; border-top: 1px solid rgba(148,163,184,0.12); }
+    .q-head{ display:flex; gap:10px; align-items:flex-start; }
+    .q-num{ width:34px; height:34px; border-radius:50%; display:grid; place-content:center; background:#0b1a2f; color:#bfdbfe; font-weight:700; border:1px solid rgba(96,165,250,0.35) }
+    /*.q-text{ font-weight:600; line-height:1.4 }*/
+
+    .q-text{
+      font-weight:600;
+      line-height:1.4;
+      display: flex;
+      /*justify-content: center;*/
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .bcs-tag {
+      padding: 4px 8px;
+      background: #1e293b;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 8px;
+      font-size: 13px;
+      color: #cbd5e1;
+      white-space: nowrap;
+      margin-left: 10px;
+      text-align: right;
+    }
+    @media (max-width: 640px) {
+        .q-text .bcs-tag {
+            margin-top: 5px;
+            margin-left: 0;
+        }
+    }
+
+
+    .options{ margin-top:12px; display:grid; gap:10px; }
+
+    .option{ display:flex; align-items:flex-start; gap:12px; padding:12px; border:1px solid rgba(148,163,184,0.18); border-radius:12px; cursor:pointer; background:#0a1020; }
+    .option:hover{ border-color: rgba(148,163,184,0.32) }
+    .option input{ appearance:none; -webkit-appearance:none; width:18px; height:18px; border-radius: 50%; border:2px solid #93c5fd; margin-top:3px; display:inline-grid; place-content:center; outline:none; }
+    .option input::before{ content:""; width:10px; height:10px; border-radius:50%; transform: scale(0); transition:120ms transform ease-in-out; background: #60a5fa; }
+    .option input:checked::before{ transform: scale(1); }
+    .option .opt-text{ flex:1; }
+
+    .actions{ position:sticky; bottom:0; background:linear-gradient(180deg, rgba(2,6,23,0), rgba(2,6,23,0.9) 25%, rgba(2,6,23,1)); padding:16px 24px; display:flex; gap:10px; justify-content:space-between; align-items:center; border-top:1px solid rgba(148,163,184,0.15);}
+
+    .result{ padding: 18px 20px; border-top: 1px solid rgba(148,163,184,0.12); background:#081427; }
+    .result strong{ color:#bbf7d0 }
+    .legend{ display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:14px }
+    .legend span{ display:inline-flex; align-items:center; gap:6px; padding:4px 8px; background:#0b1324; border:1px solid rgba(148,163,184,0.2); border-radius:9999px }
+    .dot{ width:10px; height:10px; border-radius:50% }
+    .dot.correct{ background: var(--accent) }
+    .dot.wrong{ background: var(--danger) }
+    .dot.unanswered{ background: #facc15; }
+
+    .unanswered-chip { color: #facc15; border-color: rgba(250, 204, 21, 0.4); }
+    .correct-chip { color: #22c55e; border-color: rgba(250, 204, 21, 0.4); }
+    .wrong-chip { color: #ef4444; border-color: rgba(250, 204, 21, 0.4); }
+
+    .correct{ border-color: rgba(34,197,94,0.6) !important; background: rgba(34,197,94,0.06) }
+    .wrong{ border-color: rgba(239,68,68,0.6) !important; background: rgba(239,68,68,0.06) }
+
+    .explanation-container { margin-top: 12px; padding: 12px; border-radius: 8px; background: rgba(30, 41, 59, 0.4); }
+    .result-status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600;}
+    .correct-status { color: var(--accent); }
+    .wrong-status { color: var(--danger); }
+    .unanswered-status { color: #facc15; }
+    .explain{ color:#cbd5e1; font-size:14px; opacity:0.95; margin: 0; }
+
+    .hidden{ display:none !important }
+    .mute{ color: var(--muted) }
+    .footer-note{ text-align:center; color:var(--muted); margin: 16px 0 40px; font-size:13px }
+    .score-badge{ font-weight:800; color:#052e16; background:linear-gradient(180deg, #86efac, #22c55e); border-radius:9999px; padding:6px 12px; border:1px solid var(--accent-weak) }
+
+    .back-button {
+        display: inline-block;
+        margin: 30px auto;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 200px;
+        justify-content: center;
+    }
+
+    .back-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #4a6491 0%, #2c3e50 100%);
+    }
+
+    .button-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+    /* Feedback Section Styles */
+    .feedback-section {
+      margin: 40px 0;
+      padding: 20px;
+      background: #0b1220;
+      border: 1px solid rgba(148,163,184,0.15);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    }
+    .feedback-section h2 {
+      margin-top: 0;
+      color: var(--text);
+      border-bottom: 1px solid rgba(148,163,184,0.2);
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    .feedback-inner {
+       max-width: 600px;   /* sub-container width */
+       width: 80%;         /* responsive */
+       margin: 0 auto;     /* horizontally center */
+    }
+    @media (max-width:640px){
+       .feedback-inner { width: 95%; }
+    }
+    .feedback-form {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .form-control {
+      padding: 12px 15px;
+      background: #091225;
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 16px;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .submit-feedback {
+      background: linear-gradient(180deg, var(--accent), var(--accent-weak));
+      color: #052e16;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .submit-feedback:hover {
+      filter: brightness(0.98);
+      transform: translateY(-2px);
+    }
+    
+    .form-status {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .form-status.success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--accent);
+      display: block;
+    }
+    
+    .form-status.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+      display: block;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 25px;
+      width: 90%;
+      max-width: 450px;
+      border: 1px solid rgba(148,163,184,0.15);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      margin: 0;
+      color: var(--text);
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .modal-body {
+      margin-bottom: 20px;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    @media (max-width:640px){
+        .q-head{ flex-direction:column; }
+        .button-container { flex-direction: column; align-items: center; }
+        header{ width: 100%; }
+        .header-inner { flex-wrap: wrap; }
+        .timer { order: 3; width: 100%; margin-top: 10px; text-align: center; }
+    }
+  </style>
+  {% endblock %}
+
+  {% block content %}
+  <script>
+    {% if user.is_authenticated %}
+        window.USERNAME = "{{ user.username|escapejs }}";
+    {% else %}
+        window.USERNAME = null;
+    {% endif %}
+</script>
+
+
+  <header>
+    <div class="header-inner container">
+      <div class="brand">📝 Vector MCQ Exam</div>
+      <span class="pill">10 Questions • 10 Minutes </span>
+      <div id="timer" class="timer" aria-live="polite">10:00</div>
+      <div class="controls">
+        <button id="startBtn" class="primary">Start Exam</button>
+        <button id="resetBtn" title="Start a new exam">New Exam</button>
+        <button id="rankingBtn" title="View Exam Ranking">Ranking</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card intro" id="intro">
+      <h2 style="margin:0 0 6px">Instructions</h2>
+      <ul>
+        <!--<li>There are numerous varieties of questions in the main pool. The questions will be randomly appeared to you for each exam</li>-->
+        <li>মূল প্রশ্নভাণ্ডারে অসংখ্য প্রশ্ন রয়েছে। প্রতিটি পরীক্ষায় আপনাকে এলোমেলোভাবে প্রশ্ন দেখানো হবে।</li><br>
+
+        <!--<li>Sometimes a specific question can take first position of the 10 questions but next 9 questions are automatic randomly selected from the main pool.So don't be confused</li>-->
+        <li>কখনো কখনো একটি নির্দিষ্ট প্রশ্ন প্রথম অবস্থানে আসতে পারে, কিন্তু বাকি ৯টি প্রশ্ন স্বয়ংক্রিয়ভাবে প্রশ্নভাণ্ডার থেকে এলোমেলোভাবে বাছাই হবে। তাই বিভ্রান্ত হবেন না।</li><br>
+
+        <!--<li>Click on <strong>Start Exam</strong> to participate in the Exam</li>-->
+        <li>পরীক্ষায় অংশ নিতে <strong>Start Exam-এ ক্লিক করুন।</strong></li><br>
+
+        <!--<li>Click on <strong>New Exam</strong> and then <strong>Start Exam</strong> to participate in another Exam with different questions type</li>-->
+        <li>নতুন প্রশ্ন সেট নিয়ে আবার পরীক্ষা দিতে চাইলে <strong>New Exam-এ ক্লিক করুন এবং তারপর Start Exam-এ ক্লিক করুন।</strong></li><br>
+
+        <!--<li>Scoring: Correct +1, Wrong −0.25, Unanswered 0.</li>-->
+        <li>স্কোরিং: সঠিক উত্তরের জন্য +1, ভুল উত্তরের জন্য −0.25, উত্তর না দিলে 0।</li><br>
+
+        <!--<li>Time limit: 10 minutes. Auto-submit when time ends.</li>-->
+        <li>সময়সীমা: ১০ মিনিট। সময় শেষ হলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হয়ে যাবে। <strong>Submit Exam</strong> বাটন এ ক্লিক করে ও জমা দিতে পারবেন।</li><br>
+
+        <!--<li>All questions appear on one page — scroll to navigate.</li>-->
+        <li>সব প্রশ্ন এক পাতায় থাকবে — দেখতে স্ক্রল করুন।</li><br>
+
+      </ul>
+    </section>
+
+    <div id="summary" class="card result hidden" role="status" aria-live="polite"></div>
+
+    <form id="exam" class="card" autocomplete="off"></form>
+
+    <div class="actions">
+      <div class="legend">
+        <span><span class="dot correct"></span> Correct</span>
+        <span><span class="dot wrong"></span> Wrong</span>
+        <span><span class="dot unanswered"></span> Unanswered</span>
+      </div>
+      <button id="submitBtn" class="primary" disabled>Submit Exam</button>
+    </div>
+
+    <!-- Modal for submitting marks -->
+    <div id="markModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Submit Your Score</h3>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="markForm">
+            <div class="form-group">
+              <label for="studentName">Your Name</label>
+              <input type="text" id="studentName" name="studentName" class="form-control" placeholder="Enter your name" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelMarkBtn">Cancel</button>
+          <button id="submitMarkBtn" class="primary">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Section -->
+    <section class="feedback-section">
+      <h2>Send Us Your Feedback</h2>
+      <div class='feedback-inner'>
+      <form id="feedbackForm" class="feedback-form" action="https://formspree.io/f/xwpnvyaw" method="POST">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Your Email(Optional)</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email">
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Your Feedback</label>
+          <textarea id="message" name="message" class="form-control" placeholder="Please share your thoughts, suggestions, or report any issues..." required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-feedback">Send Feedback</button>
+        
+        <div id="formStatus" class="form-status"></div>
+      </form>
+      </div>
+    </section>
+
+    <div class="button-container">
+        <a href="{% url 'index' %}" class='back-button'>
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+        <a href="{% url 'mcq_hub' %}" class='back-button'>
+            <i class="fas fa-arrow-left"></i> Back to Previous Page
+        </a>
+    </div>
+  </main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Configure MathJax before loading the script
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: {
+      fontCache: 'global'
+    },
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          // Re-render MathJax after dynamic content loads
+          if (window.contentRendered) {
+            MathJax.typesetPromise();
+          }
+        });
+      }
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+  <script>
+  // ----------------------------
+  // Utilities
+  // ----------------------------
+  const EXAM_SIZE = 10;
+  const EXAM_MINUTES = 10; // minutes
+  const STORAGE_KEY = 'narration_exam_state_v2';
+  const qs = (sel, el=document) => el.querySelector(sel);
+  const qsa = (sel, el=document) => [...el.querySelectorAll(sel)];
+  const pick = (arr, n) => {
+    // Fisher-Yates shuffle algorithm for proper randomization
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, n);
+  };
+  function formatTime(s){ const m = Math.floor(s/60).toString().padStart(2,'0'); const r = Math.floor(s%60).toString().padStart(2,'0'); return `${m}:${r}`; }
+  function saveState(state){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  function loadState(){ try{ return JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'null'); }catch{return null} }
+  function clearState(){ sessionStorage.removeItem(STORAGE_KEY); }
+
+  // ----------------------------
+  // Question Pool
+  // ----------------------------
+  const QUESTIONS = [
+    {
+      id: 1,
+      q: "<span>$|\\overline{A}|=|\\overline{B}|=3 $ &nbsp এবং &nbsp $\\overline{A}$ ও $\\overline{B}$ &nbsp এর মধ্যবর্তী কোণ,&nbsp $ \\theta$ &nbsp হলে &nbsp $|\\overline{A} \\times \\overline{B}|=?$</span>",
+      options: ["$9\\cos\\theta$", "$9\\sin\\theta$", "$\\frac{1}{9}\\sin\\theta$", "$\\frac{1}{9}\\cos\\theta$"],
+      answer: 1,
+      explain: "Answer --(B) <br> ব্যাখ্যা:<br>\\[ |\\overline{A} \\times \\overline{B}| = |A||B|\\sin\\theta = 3 \\times 3 \\sin\\theta = 9\\sin\\theta \\]"
+    },
+    {
+      id: 2,
+      q: "<span>$\\hat{j}$ &nbsp এবং $(\\hat{i}+\\hat{j})$ এর মধ্যবর্তী কোণ কত?</span><span class='bcs-tag'>RB-22</span>",
+      options: ["$0^\\circ$", "$45^\\circ$", "$60^\\circ$", "$90^\\circ$"],
+      answer: 1,
+      explain: "Answer --(B) <br> ব্যাখ্যা:<br>\\[ \\hat{j} \\cdot (\\hat{i}+\\hat{j}) = (0)(1) + (1)(1) + (0)(0) = 1 \\]<br>\\[ |\\hat{j}| = 1, \\quad |\\hat{i}+\\hat{j}| = \\sqrt{1^2 + 1^2} = \\sqrt{2} \\]<br>\\[ \\cos\\theta = \\frac{\\hat{j} \\cdot (\\hat{i}+\\hat{j})}{|\\hat{j}||\\hat{i}+\\hat{j}|} = \\frac{1}{1 \\times \\sqrt{2}} = \\frac{1}{\\sqrt{2}} \\]<br>\\[ \\theta = \\cos^{-1}\\left(\\frac{1}{\\sqrt{2}}\\right) = 45^\\circ \\]"
+    },
+{
+  id: 3,
+  q: "<span>দুটি vector $\\overline{A}$ &nbsp ও $\\overline{B}$ &nbsp এর যোগফল তাদের পার্থক্যের উপর লম্ব। নিচের কোন বিবৃতিটি অবশ্যই সত্য?</span><span class='bcs-tag'>DU:23-24</span>",
+  options: ["$|\\overline{A}|$=$|\\overline{B}|$", "$\\overline{A}$.$\\overline{B}$=0", "$\\overline{A} \\times\\overline{B}$=0", "$\\overline{A}=-2\\overline{B}$"],
+  answer: 0,
+  explain: "Answer: (A) <br><b>ব্যাখ্যা:</b><br>ধরি দুটি ভেক্টর $\\vec{A}$ এবং $\\vec{B}$, এবং তাদের যোগফল $\\vec{A} + \\vec{B}$, পার্থক্য $\\vec{A} - \\vec{B}$ এর সাথে লম্ব। যদি দুটি ভেক্টর লম্ব হয়: $(\\vec{A} + \\vec{B}) \\cdot (\\vec{A} - \\vec{B}) = 0$, বিস্তার করলে পাই: $\\vec{A}\\cdot\\vec{A} - \\vec{A}\\cdot\\vec{B} + \\vec{B}\\cdot\\vec{A} - \\vec{B}\\cdot\\vec{B} = |\\vec{A}|^2 - |\\vec{B}|^2 = 0$, অতএব: $|\\vec{A}| = |\\vec{B}|$.<br><br>উদাহরণ হিসাবে: $\\vec{A} = 3\\hat{i} + 4\\hat{j}$ এবং $\\vec{B} = 4\\hat{i} + 3\\hat{j}$ নেওয়া যাক।<br>যোগফল: $\\vec{A} + \\vec{B} = 7\\hat{i} + 7\\hat{j}$<br>পার্থক্য: $\\vec{A} - \\vec{B} = -\\hat{i} + \\hat{j}$<br>ডট গুণফল: $(\\vec{A} + \\vec{B}) \\cdot (\\vec{A} - \\vec{B}) = (7)(-1) + (7)(1) = -7 + 7 = 0$<br>যেহেতু ডট গুণফল শূন্য, তাই যোগফল ও পার্থক্য পরস্পর লম্ব। উভয় ভেক্টরের ম্যাগনিচিউড: $|\\vec{A}| = \\sqrt{3^2+4^2} = 5$, $|\\vec{B}| = \\sqrt{4^2+3^2} = 5$"
+},
+{
+  id: 4,
+  q: "<span>$\\vec{P}$ ও $\\vec{Q}$ এর মধ্যবর্তী কোন $\\beta$ হলে $\\dfrac{\\vec{P} \\cdot \\vec{Q}}{|\\vec{P}\\times\\vec{Q}|}$=?</span><span class='bcs-tag'>RU:23-24</span>",
+  options: ["$\\tan\\beta$", "$\\sec\\beta$", "$\\cot\\beta$", "$\\sin\\beta$"],
+  answer: 2,
+  explain: "Answer: (C) $\\cot\\beta$ <br><b>ব্যাখ্যা:</b><br>দুটি ভেক্টরের জন্য:<br>ডট গুণফলের সংজ্ঞা: $\\vec{P} \\cdot \\vec{Q} = |\\vec{P}||\\vec{Q}|\\cos\\beta$<br>ক্রস গুণফলের মাত্রা: $|\\vec{P} \\times \\vec{Q}| = |\\vec{P}||\\vec{Q}|\\sin\\beta$<br><br>অতএব:<br>\\[ \\frac{\\vec{P} \\cdot \\vec{Q}}{|\\vec{P} \\times \\vec{Q}|} = \\frac{|\\vec{P}||\\vec{Q}|\\cos\\beta}{|\\vec{P}||\\vec{Q}|\\sin\\beta} = \\frac{\\cos\\beta}{\\sin\\beta} = \\cot\\beta \\]<br><br>উদাহরণ: $\\vec{P} = 3\\hat{i}$ এবং $\\vec{Q} = 4\\hat{j}$ হলে, মধ্যবর্তী কোণ $\\beta = 90^\\circ$<br>ডট গুণফল: $\\vec{P} \\cdot \\vec{Q} = (3)(0) + (0)(4) = 0$<br>ক্রস গুণফল: $|\\vec{P} \\times \\vec{Q}| = |3 \\times 4| = 12$ (যেহেতু তারা লম্ব)<br>অনুপাত: $\\frac{0}{12} = 0$ এবং $\\cot 90^\\circ = 0$, যা মিলে যায়।"
+},
+
+{
+  id: 5,
+  q: "<span>দুটি ভেক্টর রাশির ক্রস গুণন ও ডট গুণনের মান সমান হলে ভেক্টর দুটির মধ্যবর্তী কোণ কতো?</span><span class='bcs-tag'>JU:19-20</span>",
+  options: ["$0^\\circ$", "$60^\\circ$", "$45^\\circ$", "$90^\\circ$"],
+  answer: 2,
+  explain: "Answer: (C) $45^\\circ$ <br><b>ব্যাখ্যা:</b><br>দুটি ভেক্টর $\\vec{A}$ এবং $\\vec{B}$ এর জন্য:<br>ডট গুণফল: $\\vec{A} \\cdot \\vec{B} = |\\vec{A}||\\vec{B}|\\cos\\theta$<br>ক্রস গুণফলের মান: $|\\vec{A} \\times \\vec{B}| = |\\vec{A}||\\vec{B}|\\sin\\theta$<br><br>প্রশ্নানুসারে, ডট ও ক্রস গুণফলের মান সমান:<br>\\[ |\\vec{A}||\\vec{B}|\\cos\\theta = |\\vec{A}||\\vec{B}|\\sin\\theta \\]<br>\\[ \\cos\\theta = \\sin\\theta \\]<br>\\[ \\frac{\\sin\\theta}{\\cos\\theta} = 1 \\]<br>\\[ \\tan\\theta = 1 \\]<br>\\[ \\theta = 45^\\circ \\]<br><br>উদাহরণ: $\\vec{A} = 2\\hat{i}$ এবং $\\vec{B} = 2\\hat{i} + 2\\hat{j}$ নেওয়া যাক<br>মধ্যবর্তী কোণ: $\\theta = 45^\\circ$<br>ডট গুণফল: $\\vec{A} \\cdot \\vec{B} = (2)(2) + (0)(2) = 4$<br>ক্রস গুণফলের মান: $|\\vec{A} \\times \\vec{B}| = |(2)(2)\\sin 45^\\circ| = 4 \\times \\frac{\\sqrt{2}}{2} = 2\\sqrt{2} \\approx 2.828$<br>মান সমান নয়, কিন্তু $|\\vec{A}| = 2$, $|\\vec{B}| = 2\\sqrt{2} \\approx 2.828$ হলে:<br>ডট গুণফল: $|\\vec{A}||\\vec{B}|\\cos\\theta = 2 \\times 2.828 \\times 0.7071 \\approx 4$<br>ক্রস গুণফল: $|\\vec{A}||\\vec{B}|\\sin\\theta = 2 \\times 2.828 \\times 0.7071 \\approx 4$<br>সমান মান পাওয়া যায়।"
+},
+{
+  id: 6,
+  q: "<span>$\\vec{A}=\\hat{i}-3\\hat{j}+5\\hat{k}$ এবং $\\vec{B}=m\\hat{i}+6\\hat{j}-10\\hat{k}$। $m$ এর মান কতো হলে ভেক্টর দুটি পরস্পর সমান্তরাল হবে?</span><span class='bcs-tag'>JUST:18-19</span>",
+  options: ["$+2$", "$-2$", "$\\frac{-1}{2}$", "$\\frac{1}{2}$"],
+  answer: 1,
+  explain: "Answer: (B) $-2$ <br><b>ব্যাখ্যা:</b><br>দুটি ভেক্টর সমান্তরাল হবে যদি তাদের ক্রস গুণফল শূন্য ভেক্টর হয়। অর্থাৎ, $\\vec{A} \\times \\vec{B} = \\vec{0}$<br><br>দেওয়া আছে:<br>$\\vec{A} = \\hat{i} - 3\\hat{j} + 5\\hat{k}$<br>$\\vec{B} = m\\hat{i} + 6\\hat{j} - 10\\hat{k}$<br><br>ক্রস গুণফল নির্ণয়:<br>\\[ \\vec{A} \\times \\vec{B} = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 1 & -3 & 5 \\\\ m & 6 & -10 \\end{vmatrix} \\]<br><br>\\[ = \\hat{i}[(-3)(-10) - (5)(6)] - \\hat{j}[(1)(-10) - (5)(m)] + \\hat{k}[(1)(6) - (-3)(m)] \\]<br><br>\\[ = \\hat{i}[30 - 30] - \\hat{j}[-10 - 5m] + \\hat{k}[6 + 3m] \\]<br><br>\\[ = 0\\hat{i} + (10 + 5m)\\hat{j} + (6 + 3m)\\hat{k} \\]<br><br>ভেক্টরদ্বয় সমান্তরাল হওয়ার শর্ত অনুসারে, এই ক্রস গুণফল শূন্য ভেক্টর হতে হবে:<br>\\[ 10 + 5m = 0 \\quad \\text{এবং} \\quad 6 + 3m = 0 \\]<br><br>প্রথম সমীকরণ থেকে:<br>\\[ 10 + 5m = 0 \\]<br>\\[ 5m = -10 \\]<br>\\[ m = -2 \\]<br><br>দ্বিতীয় সমীকরণ থেকে:<br>\\[ 6 + 3m = 0 \\]<br>\\[ 3m = -6 \\]<br>\\[ m = -2 \\]<br><br>উভয় সমীকরণ থেকে আমরা পাই $m = -2$<br><br>যাচাইকরণ: $m = -2$ হলে,<br>$\\vec{B} = -2\\hat{i} + 6\\hat{j} - 10\\hat{k} = -2(\\hat{i} - 3\\hat{j} + 5\\hat{k}) = -2\\vec{A}$<br>সুতরাং ভেক্টরদ্বয় সমান্তরাল।"
+},
+{
+  id: 7,
+  q: "<span>দুটি সমমানের ভেক্টর একটি বিন্দুতে ক্রিয়াশীল। এদের লব্ধির মান যেকোন একটি ভেক্টরের মানের সমান। ভেক্টর দুটির মধ্যবর্তী কোণ কতো?</span><span class='bcs-tag'>DU:20-21</span>",
+  options: ["$0^\\circ$", "$90^\\circ$", "$120^\\circ$", "$180^\\circ$"],
+  answer: 2,
+  explain: "Answer: (C) $120^\\circ$ <br><b>ব্যাখ্যা:</b><br>ধরি, প্রতিটি ভেক্টরের মান $A$ এবং তাদের মধ্যবর্তী কোণ $\\theta$<br>লব্ধির মান: $R = \\sqrt{A^2 + A^2 + 2A^2\\cos\\theta} = \\sqrt{2A^2(1 + \\cos\\theta)}$<br><br>প্রশ্নানুসারে, লব্ধির মান একটি ভেক্টরের মানের সমান:<br>\\[ \\sqrt{2A^2(1 + \\cos\\theta)} = A \\]<br>\\[ 2A^2(1 + \\cos\\theta) = A^2 \\]<br>\\[ 2(1 + \\cos\\theta) = 1 \\]<br>\\[ 1 + \\cos\\theta = \\frac{1}{2} \\]<br>\\[ \\cos\\theta = -\\frac{1}{2} \\]<br>\\[ \\theta = 120^\\circ \\]<br><br>উদাহরণ: দুটি ভেক্টর $\\vec{A}$ এবং $\\vec{B}$ যাদের মান 5 একক এবং মধ্যবর্তী কোণ $120^\\circ$<br>লব্ধির মান: $R = \\sqrt{5^2 + 5^2 + 2 \\times 5 \\times 5 \\times \\cos 120^\\circ}$<br>\\[ = \\sqrt{25 + 25 + 50 \\times (-0.5)} = \\sqrt{50 - 25} = \\sqrt{25} = 5 \\]<br>যা একটি ভেক্টরের মানের সমান।"
+},
+{
+  id: 8,
+  q: "<span>একই সময়ে একই বিন্দুতে ক্রিয়ারত তিনটি সমতলীয় ভেক্টর রাশিকে কোন ত্রিভুজের তিনটি বাহুর দ্বারা একই ক্রমে নির্দেশ করলে এদের লব্ধি হবে--</span><span class='bcs-tag'>JU:21-22</span>",
+  options: ["কম", "বেশি", "অপরিবর্তিত", "শূন্য"],
+  answer: 3,
+  explain: "Answer: (D) শূন্য <br><b>ব্যাখ্যা:</b><br>যখন তিনটি ভেক্টরকে একটি ত্রিভুজের তিনটি বাহু দ্বারা একই ক্রমে নির্দেশ করা হয়, তখন ভেক্টরগুলির যোগফল শূন্য হবে। এটি ভেক্টর যোগের ত্রিভুজ সূত্র বা বহুভুজ সূত্র থেকে প্রমাণিত।<br><br>ত্রিভুজ সূত্র অনুযায়ী: যদি তিনটি ভেক্টর $\\vec{a}$, $\\vec{b}$ এবং $\\vec{c}$ একটি ত্রিভুজের তিনটি বাহু দ্বারা প্রতিনিধিত্ব করা হয়, তাহলে:<br>\\[ \\vec{a} + \\vec{b} + \\vec{c} = \\vec{0} \\]<br><br>কারণ ত্রিভুজের বাহুগুলি একে অপরকে বাতিল করে দেয় যখন আমরা একটি বদ্ধ লूप তৈরি করি।<br><br>উদাহরণ: একটি ত্রিভুজ ABC বিবেচনা করুন, যেখানে:<br>$\\vec{AB} = \\vec{a}$<br>$\\vec{BC} = \\vec{b}$<br>$\\vec{CA} = \\vec{c}$<br><br>ভেক্টর যোগফল: $\\vec{a} + \\vec{b} + \\vec{c} = \\vec{AB} + \\vec{BC} + \\vec{CA} = \\vec{AC} + \\vec{CA} = \\vec{0}$<br><br>সুতরাং, তিনটি ভেক্টরের লব্ধি শূন্য হবে যদি তারা একটি ত্রিভুজের তিনটি বাহু দ্বারা প্রতিনিধিত্ব করা হয়।"
+},
+
+{
+  id: 9,
+  q: "<span>ভেক্টর $\\vec{A}$, $\\vec{B}$ ও $\\vec{C}$ এর মান যথাক্রমে 12, 5, 13 এবং $\\vec{A} + \\vec{B} = \\vec{C}$। $\\vec{A}$ ও $\\vec{B}$ এর মধ্যবর্তী কোণ কতো?</span><span class='bcs-tag'>DU:17-18</span>",
+  options: ["$\\pi/2$", "$\\pi/3$", "$\\pi/4$", "$\\pi/6$"],
+  answer: 0,
+  explain: "Answer: (A) $\\pi/2$ <br><b>ব্যাখ্যা:</b><br>দেওয়া আছে: $|\\vec{A}| = 12$, $|\\vec{B}| = 5$, $|\\vec{C}| = 13$ এবং $\\vec{A} + \\vec{B} = \\vec{C}$<br><br>লব্ধি ভেক্টরের মানের সূত্র অনুসারে:<br>\\[ |\\vec{C}|^2 = |\\vec{A} + \\vec{B}|^2 = |\\vec{A}|^2 + |\\vec{B}|^2 + 2|\\vec{A}||\\vec{B}|\\cos\\theta \\]<br>যেখানে $\\theta$ হল $\\vec{A}$ এবং $\\vec{B}$ এর মধ্যবর্তী কোণ।<br><br>মানগুলি বসিয়ে:<br>\\[ 13^2 = 12^2 + 5^2 + 2 \\times 12 \\times 5 \\times \\cos\\theta \\]<br>\\[ 169 = 144 + 25 + 120\\cos\\theta \\]<br>\\[ 169 = 169 + 120\\cos\\theta \\]<br>\\[ 0 = 120\\cos\\theta \\]<br>\\[ \\cos\\theta = 0 \\]<br>\\[ \\theta = \\frac{\\pi}{2} \\text{ or } 90^\\circ \\]<br><br>যাচাইকরণ: 12, 5, 13 একটি পিথাগোরিয়ান ট্রিপল যেখানে $12^2 + 5^2 = 144 + 25 = 169 = 13^2$, যা দেখায় যে ভেক্টর $\\vec{A}$ এবং $\\vec{B}$ পরস্পর লম্ব।"
+},
+
+{
+  id: 10,
+  q: "<span>$\\vec{A}=\\hat{i}-4\\hat{j}+5\\hat{k}$ ও $\\vec{B}=6\\hat{i}-3\\hat{j}+2\\hat{k}$ হলে $\\vec{B}$ বরাবর $\\vec{A}$ এর অভিক্ষেপ বা অংশক কতো?</span><span class='bcs-tag'>SUST:04-05</span>",
+  options: ["$5$", "$6$", "$4$", "$8$"],
+  answer: 2,
+  explain: "Answer: (C) $4$ <br><b>ব্যাখ্যা:</b><br>ভেক্টর $\\vec{A}$ এর $\\vec{B}$ বরাবর স্কেলার অভিক্ষেপ বা অংশক নির্ণয় করতে আমরা নিম্নলিখিত সূত্র ব্যবহার করব:<br>\\[ \\text{scalar proj}_{\\vec{B}} \\vec{A} = \\frac{\\vec{A} \\cdot \\vec{B}}{|\\vec{B}|} \\]<br><br>প্রথমে $\\vec{A} \\cdot \\vec{B}$ নির্ণয় করি:<br>\\[ \\vec{A} \\cdot \\vec{B} = (1)(6) + (-4)(-3) + (5)(2) = 6 + 12 + 10 = 28 \\]<br><br>এখন $|\\vec{B}|$ নির্ণয় করি:<br>\\[ |\\vec{B}| = \\sqrt{(6)^2 + (-3)^2 + (2)^2} = \\sqrt{36 + 9 + 4} = \\sqrt{49} = 7 \\]<br><br>অতএব, $\\vec{B}$ বরাবর $\\vec{A}$ এর স্কেলার অভিক্ষেপ বা অংশক হবে:<br>\\[ \\text{scalar proj}_{\\vec{B}} \\vec{A} = \\frac{28}{7} = 4 \\]<br><br>সুতরাং, $\\vec{B}$ বরাবর $\\vec{A}$ এর অভিক্ষেপ বা অংশক হলো $4$।"
+},
+
+
+ 
+
+
+
+{
+  id: 11,
+  q: "$\\vec{A} = 4\\hat{i} + 3\\hat{j}$ এবং $\\vec{B} = 2\\hat{i} - 6\\hat{j}$ হলে $\\vec{A} + \\vec{B} = ?$",
+  options: ["$6\\hat{i} - 3\\hat{j}$", "$6\\hat{i} + 9\\hat{j}$", "$2\\hat{i} + 9\\hat{j}$", "$2\\hat{i} - 3\\hat{j}$"],
+  answer: 0,
+  explain: "Answer: (A) $6\\hat{i} - 3\\hat{j}$ <br> ব্যাখ্যা:<br>\\[ \\vec{A} + \\vec{B} = (4+2)\\hat{i} + (3-6)\\hat{j} = 6\\hat{i} - 3\\hat{j} \\]"
+},
+{
+  id: 12,
+  q: "$\\vec{A} = 2\\hat{i} - 3\\hat{j} + \\hat{k}$ এবং $\\vec{B} = -\\hat{i} + 2\\hat{j} + 3\\hat{k}$ হলে $\\vec{A} \\times \\vec{B} = ?$",
+  options: ["$-11\\hat{i} - 7\\hat{j} + \\hat{k}$", "$-11\\hat{i} + 7\\hat{j} + \\hat{k}$", "$11\\hat{i} - 7\\hat{j} + \\hat{k}$", "$11\\hat{i} + 7\\hat{j} - \\hat{k}$"],
+  answer: 0,
+  "explain": "Answer: (A) $-11\\hat{i} - 7\\hat{j} + \\hat{k}$<br>ব্যাখ্যা:<br>\\[ \\begin{align*} \\vec{A} \\times \\vec{B} &= \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 2 & -3 & 1 \\\\ -1 & 2 & 3 \\end{vmatrix} \\\\ &= \\hat{i}[(-3)(3) - (1)(2)] - \\hat{j}[(2)(3) - (1)(-1)] + \\hat{k}[(2)(2) - (-3)(-1)] \\\\ &= \\hat{i}[-9 - 2] - \\hat{j}[6 + 1] + \\hat{k}[4 - 3] \\\\ &= -11\\hat{i} - 7\\hat{j} + \\hat{k} \\end{align*} \\]"
+},
+{
+  id: 13,
+  q: "$\\vec{A} = 5\\hat{i} - 12\\hat{j}$ হলে $|\\vec{A}|$ এর মান কত?",
+  options: ["$7$", "$13$", "$17$", "$25$"],
+  answer: 1,
+  explain: "Answer: (B) $13$ <br> ব্যাখ্যা:<br>\\[ |\\vec{A}| = \\sqrt{(5)^2 + (-12)^2} = \\sqrt{25 + 144} = \\sqrt{169} = 13 \\]"
+},
+{
+  id: 14,
+  q: "$\\vec{A} = 3\\hat{i} + 4\\hat{j} - 5\\hat{k}$ এবং $\\vec{B} = 2\\hat{i} - \\hat{j} + 3\\hat{k}$ হলে $\\vec{A} \\cdot \\vec{B} = ?$",
+  options: ["$-5$", "$5$", "$-13$", "$13$"],
+  answer: 2,
+  explain: "Answer: (C) $-13$ <br> ব্যাখ্যা:<br>\\[ \\vec{A} \\cdot \\vec{B} = (3)(2) + (4)(-1) + (-5)(3) = 6 - 4 - 15 = -13 \\]"
+}, 
+{
+  id: 15,
+  q: "$\\vec{A} = 2\\hat{i} - \\hat{j} + 3\\hat{k}$ এবং $\\vec{B} = \\hat{i} + 2\\hat{j} - \\hat{k}$ হলে $3\\vec{A} - 2\\vec{B} = ?$",
+  options: ["$4\\hat{i} - 7\\hat{j} + 11\\hat{k}$", "$4\\hat{i} + 7\\hat{j} + 11\\hat{k}$", "$4\\hat{i} - 7\\hat{j} - 11\\hat{k}$", "$-4\\hat{i} - 7\\hat{j} + 11\\hat{k}$"],
+  answer: 0,
+  "explain": "Answer: (A) -- $4\\hat{i} - 7\\hat{j} + 11\\hat{k}$<br>ব্যাখ্যা:<br>\\[ \\begin{align*} 3\\vec{A} - 2\\vec{B} &= 3(2\\hat{i} - \\hat{j} + 3\\hat{k}) - 2(\\hat{i} + 2\\hat{j} - \\hat{k}) \\\\ &= (6\\hat{i} - 3\\hat{j} + 9\\hat{k}) - (2\\hat{i} + 4\\hat{j} - 2\\hat{k}) \\\\ &= (6-2)\\hat{i} + (-3-4)\\hat{j} + (9-(-2))\\hat{k} \\\\ &= 4\\hat{i} - 7\\hat{j} + 11\\hat{k} \\end{align*} \\]"
+},
+{
+  id: 16,
+  q: "<span>যদি $\\vec{P}=\\hat{i}-\\hat{j}+\\hat{k}$ এবং $\\vec{Q}=\\hat{i}+\\hat{j}+\\hat{k}$ একটি সামান্তরিকের দুটি সন্নিহিত বাহু নির্দেশ করে, তাহলে উপযুক্ত এককে সামান্তরিকের ক্ষেত্রফল নির্ণয় করো।</span><span class='bcs-tag'>DU:15-16</span>",
+  options: ["$2\\sqrt{2}$", "$2$", "$1$", "$\\sqrt{2}$"],
+  answer: 0,
+  explain: "Answer: (A) -- $2\\sqrt{2}$ <br><b>ব্যাখ্যা:</b><br>সামান্তরিকের ক্ষেত্রফল = $|\\vec{P} \\times \\vec{Q}|$<br><br>প্রথমে $\\vec{P} \\times \\vec{Q}$ নির্ণয় করি:<br>\\[ \\vec{P} \\times \\vec{Q} = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 1 & -1 & 1 \\\\ 1 & 1 & 1 \\end{vmatrix} \\]<br>\\[ = \\hat{i}[(-1)(1) - (1)(1)] - \\hat{j}[(1)(1) - (1)(1)] + \\hat{k}[(1)(1) - (-1)(1)] \\]<br>\\[ = \\hat{i}[-1 - 1] - \\hat{j}[1 - 1] + \\hat{k}[1 - (-1)] \\]<br>\\[ = -2\\hat{i} - 0\\hat{j} + 2\\hat{k} \\]<br>\\[ = -2\\hat{i} + 2\\hat{k} \\]<br><br>এখন $|\\vec{P} \\times \\vec{Q}|$ নির্ণয় করি:<br>\\[ |\\vec{P} \\times \\vec{Q}| = \\sqrt{(-2)^2 + 0^2 + 2^2} = \\sqrt{4 + 0 + 4} = \\sqrt{8} = 2\\sqrt{2} \\]<br><br>সুতরাং, সামান্তরিকের ক্ষেত্রফল = $2\\sqrt{2}$ বর্গ একক।"
+},
+{
+  id: 17,
+  q: "<span>যদি $\\vec{A}=2\\hat{i}+3\\hat{j}-5\\hat{k}$ এবং $\\vec{B}=m\\hat{i}+2\\hat{j}+10\\hat{k}$ । m এর মান কতো হলে ভেক্টর দুটি পরস্পর লম্ব হবে?</span><span class='bcs-tag'>DU:13-14</span>",
+  options: ["$12$", "$20$", "$22$", "$122$"],
+  answer: 1,
+  explain: "Answer: (B) -- $20$ <br><b>ব্যাখ্যা:</b><br>দুটি ভেক্টর পরস্পর লম্ব হবে যদি তাদের ডট গুণফল শূন্য হয়। অর্থাৎ, $\\vec{A} \\cdot \\vec{B} = 0$<br><br>ডট গুণফল নির্ণয় করি:<br>\\[ \\vec{A} \\cdot \\vec{B} = (2)(m) + (3)(2) + (-5)(10) \\]<br>\\[ = 2m + 6 - 50 \\]<br>\\[ = 2m - 44 \\]<br><br>ভেক্টরদ্বয় লম্ব হওয়ার শর্ত অনুসারে:<br>\\[ \\vec{A} \\cdot \\vec{B} = 0 \\]<br>\\[ 2m - 44 = 0 \\]<br>\\[ 2m = 44 \\]<br>\\[ m = 22 \\]<br><br>সুতরাং, m এর মান 22 হলে ভেক্টর দুটি পরস্পর লম্ব হবে।"
+},
+{
+  id: 18,
+  q: "<span>দুটি সমমানের ভেক্টর একটি বিন্দুতে ক্রিয়াশীল। এদের লব্ধির মান যেকোনো একটি ভেক্টরের মানের সমান। ভেক্টর দুটির মধ্যবর্তী কোণ কতো?</span><span class='bcs-tag'>DU:11-12</span>",
+  options: ["$180^\\circ$", "$120^\\circ$", "$90^\\circ$", "$0^\\circ$"],
+  answer: 1,
+  explain: "Answer: (B) -- $120^\\circ$ <br><b>ব্যাখ্যা:</b><br>ধরি, প্রতিটি ভেক্টরের মান $A$ এবং তাদের মধ্যবর্তী কোণ $\\theta$<br>লব্ধির মান: $R = \\sqrt{A^2 + A^2 + 2A^2\\cos\\theta} = \\sqrt{2A^2(1 + \\cos\\theta)}$<br><br>প্রশ্নানুসারে, লব্ধির মান একটি ভেক্টরের মানের সমান:<br>\\[ \\sqrt{2A^2(1 + \\cos\\theta)} = A \\]<br>\\[ 2A^2(1 + \\cos\\theta) = A^2 \\]<br>\\[ 2(1 + \\cos\\theta) = 1 \\]<br>\\[ 1 + \\cos\\theta = \\frac{1}{2} \\]<br>\\[ \\cos\\theta = -\\frac{1}{2} \\]<br>\\[ \\theta = 120^\\circ \\]<br><br>উদাহরণ: দুটি ভেক্টর $\\vec{A}$ এবং $\\vec{B}$ যাদের মান 5 একক এবং মধ্যবর্তী কোণ $120^\\circ$<br>লব্ধির মান: $R = \\sqrt{5^2 + 5^2 + 2 \\times 5 \\times 5 \\times \\cos 120^\\circ}$<br>\\[ = \\sqrt{25 + 25 + 50 \\times (-0.5)} = \\sqrt{50 - 25} = \\sqrt{25} = 5 \\]<br>যা একটি ভেক্টরের মানের সমান।"
+},
+{
+  id: 19,
+  q: "<span>তিনটি ভেক্টর $\\vec{A},\\vec{B}$ ও $\\vec{C}$ সমতলীয় হওয়ার শর্ত হল--</span><span class='bcs-tag'>RU:17-18</span>",
+  options: ["$\\vec{A}\\cdot(\\vec{B}\\times\\vec{C})=0$", "$\\vec{A}\\cdot\\vec{B}\\cdot\\vec{C}=0$", "$\\vec{A}\\times(\\vec{B}\\times\\vec{C})=0$", "$(\\vec{A}\\cdot\\vec{B})\\times\\vec{C}=0$"],
+  answer: 0,
+  explain: "Answer: (A)--$\\vec{A}\\cdot(\\vec{B}\\times\\vec{C})=0$ <br><b>ব্যাখ্যা:</b><br>তিনটি ভেক্টর $\\vec{A}, \\vec{B}, \\vec{C}$ সমতলীয় হবে যদি তাদের স্কেলার ট্রিপল প্রোডাক্ট শূন্য হয়। অর্থাৎ যেকোনো দুইটি ভেক্টর এর ক্রস গুণনের সাথে অপর ভেক্টর এর ডট গুণফল শুন্য হবে। অর্থাৎ, $\\vec{A} \\cdot (\\vec{B} \\times \\vec{C}) = 0$<br><br>স্কেলার ট্রিপল প্রোডাক্ট হল একটি ভেক্টরের ডট প্রোডাক্ট অন্য দুই ভেক্টরের ক্রস প্রোডাক্টের সাথে। এটি ভেক্টর তিনটির দ্বারা গঠিত প্যারালেলিপাইপের আয়তনকে প্রতিনিধিত্ব করে।<br><br>যদি এই আয়তন শূন্য হয়, তাহলে ভেক্টর তিনটি একই সমতলে অবস্থিত, অর্থাৎ তারা সমতলীয়।<br><br>উদাহরণ: ধরা যাক,<br>$\\vec{A} = \\hat{i} + 2\\hat{j} + 3\\hat{k}$<br>$\\vec{B} = 4\\hat{i} + 5\\hat{j} + 6\\hat{k}$<br>$\\vec{C} = 7\\hat{i} + 8\\hat{j} + 9\\hat{k}$<br><br>প্রথমে, $\\vec{B} \\times \\vec{C}$ নির্ণয় করি:<br>\\[ \\vec{B} \\times \\vec{C} = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{vmatrix} = \\hat{i}(5\\cdot9 - 6\\cdot8) - \\hat{j}(4\\cdot9 - 6\\cdot7) + \\hat{k}(4\\cdot8 - 5\\cdot7) \\]<br>\\[ = \\hat{i}(45 - 48) - \\hat{j}(36 - 42) + \\hat{k}(32 - 35) \\]<br>\\[ = -3\\hat{i} + 6\\hat{j} - 3\\hat{k} \\]<br><br>এখন, $\\vec{A} \\cdot (\\vec{B} \\times \\vec{C})$ নির্ণয় করি:<br>\\[ \\vec{A} \\cdot (\\vec{B} \\times \\vec{C}) = (1)(-3) + (2)(6) + (3)(-3) = -3 + 12 - 9 = 0 \\]<br><br>যেহেতু স্কেলার ট্রিপল প্রোডাক্ট শূন্য, তাই ভেক্টর তিনটি সমতলীয়।"
+},
+{
+  id: 20,
+  q: "<span>$\\vec{A}$ ও $\\vec{B}$ দুটি ভেক্টর হলে, $(\\vec{A}\\times\\vec{B})+(\\vec{B}\\times\\vec{A})=?$</span><span class='bcs-tag'>RU:16-17</span>",
+  options: ["1", "0", "$(AB)^{2}$", "2AB"],
+  answer: 1,
+  explain: "Answer: (B)--$0$ <br><b>ব্যাখ্যা:</b><br>ভেক্টর ক্রস গুণফল একটি অ্যান্টিসিমেট্রিক অপারেশন। অর্থাৎ, $\\vec{A} \\times \\vec{B} = - (\\vec{B} \\times \\vec{A})$।<br><br>সুতরাং, $(\\vec{A}\\times\\vec{B})+(\\vec{B}\\times\\vec{A}) = \\vec{A}\\times\\vec{B} - \\vec{A}\\times\\vec{B} = 0$।"
+},
+{
+  id: 21,
+  q: "<span>$\\vec{A}=-\\vec{B}$ হলে $\\vec{A}\\times\\vec{B}$ -এর মান বের করো।</span><span class='bcs-tag'>DU:05-06</span>",
+  options: ["$-A^{2}$", "0", "$-B^{2}$", "1"],
+  answer: 1, 
+  explain: "Answer: (B) -- $0$ <br><b>ব্যাখ্যা:</b><br>যেহেতু $\\vec{A} = -\\vec{B}$, তাই $\\vec{A}\\times\\vec{B} = -\\vec{B}\\times\\vec{B}$ = $|\\vec{-B}||\\vec{B}|sin180^\\circ= 0$। <br> উল্লেখ্য যে,  $-\\vec{B}$ এবং $\\vec{B}$ এর মধ্যবর্তী কোণ $180^\\circ$",
+},
+{
+  id: 22,
+  q: "<span>যদি $\\vec{A}=\\hat{i}+\\hat{j}+\\hat{k}, \\vec{B}=2\\hat{i}+2\\hat{j}+2\\hat{k}$, then $\\vec{A}\\times\\vec{B}=?$</span><span class='bcs-tag'>DU:03-04</span>",
+  options: ["$3\\hat{i}+3\\hat{j}+3\\hat{k}$", "$2\\hat{i}+2\\hat{j}+2\\hat{k}$", "$\\sqrt{12}(\\hat{i}+\\hat{j}+\\hat{k})$", "0"],
+  answer: 3,
+  explain: "Answer: (D) -- $0$ <br><b>ব্যাখ্যা:</b><br> Shortcut: যেহেতু $\\vec{B} = 2\\vec{A}$, তাই $\\vec{A}$ এবং $\\vec{B}$ পরস্পর সমান্তরাল।<br>সমান্তরাল ভেক্টরের ক্রস প্রোডাক্ট সবসময় শূন্য হয়। সুতরাং, $\\vec{A}\\times\\vec{B} = 0$। <br> <br> বিস্তারিত ব্যাখ্যা: <br>\\[ \\vec{A} \\times \\vec{B} = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 1 & 1 & 1 \\\\ 2 & 2 & 2 \\end{vmatrix} \\]<br>\\[ = \\hat{i}(1\\cdot2 - 1\\cdot2) - \\hat{j}(1\\cdot2 - 1\\cdot2) + \\hat{k}(1\\cdot2 - 1\\cdot2) \\]<br>\\[ = \\hat{i}(0) - \\hat{j}(0) + \\hat{k}(0) = 0 \\]"
+},
+{
+  id: 23,
+  q: "<span>$\\vec{A}$ ও $\\vec{B}$ দুটি ভেক্টর রাশি হলে নিচের কোনটি সঠিক?</span><span class='bcs-tag'>JNU:15-16</span>",
+  options: ["$\\vec{A}\\times\\vec{B}=\\vec{B}\\times\\vec{A}$", "$\\vec{A}\\times\\vec{B}=-(\\vec{B}\\times\\vec{A})$","কোনটি নয়","A ও B উভয়ই" ], 
+  answer: 1,
+  explain: "Answer: (B) -- $-\\vec{B}\\times\\vec{A}$ <br><b>ব্যাখ্যা:</b><br>ভেক্টর ক্রস গুণফল একটি অ্যান্টিসিমেট্রিক অপারেশন। অর্থাৎ, $\\vec{A} \\times \\vec{B} = - (\\vec{B} \\times \\vec{A})$।"
+},
+{
+  id: 24,
+  q: "<span>$\\vec{A}$ ও $\\vec{B}$ ভেক্টরের লম্ব বরাবর একক ভেক্টরের রাশিমালা কোনটি?</span><span class='bcs-tag'>JNU:10-11</span>",
+  options: ["$\\widehat{\\eta}=\\dfrac{|\\vec{A}\\times\\vec{B}|}{\\vec{A}\\times\\vec{B}}$", "$\\widehat{\\eta}=\\dfrac{\\vec{A}\\times\\vec{B}}{|\\vec{A}\\times\\vec{B}|}$","$\\widehat{\\eta}=\\dfrac{\\vec{A}\\times\\vec{B}}{|\\vec{A}\\cdot\\vec{B}|}$","$\\widehat{\\eta}=\\dfrac{\\vec{A}\\cdot\\vec{B}}{|\\vec{A}\\cdot\\vec{B}|}$"],
+  answer: 1,
+  explain: "Answer: (B) --- $\\widehat{\\eta}=\\dfrac{\\vec{A}\\times\\vec{B}}{|\\vec{A}\\times\\vec{B}|}$ <br><b>ব্যাখ্যা:</b><br>দুটি ভেক্টর $\\vec{A}$ এবং $\\vec{B}$ এর ক্রস প্রোডাক্ট $\\vec{A} \\times \\vec{B}$ একটি নতুন ভেক্টর তৈরি করে যা উভয় ভেক্টরের লম্ব বরাবর থাকে।<br><br>একক ভেক্টর হল এমন একটি ভেক্টর যার মান 1।<br><br>একটি ভেক্টরের একক রাশিমালা নির্ণয় করতে, সেই ভেক্টরকে তার মান দ্বারা ভাগ করতে হয়। সুতরাং, $\\vec{A} \\times \\vec{B}$ এর একক রাশিমালা হবে:<br>\\[ \\widehat{\\eta} = \\dfrac{\\vec{A} \\times \\vec{B}}{|\\vec{A} \\times \\vec{B}|} \\]<br>এটি নিশ্চিত করে যে $\\hat{\\eta}$ একটি একক ভেক্টর যা $\\vec{A}$ এবং $\\vec{B}$ এর লম্ব বরাবর নির্দেশ করে।"
+},
+  {
+    id:25,
+    q: "<span>$\\vec{A}=2\\hat{i}+\\hat{j}-\\hat{k}$ ও $\\vec{B}=4\\hat{j}-\\hat{k}$ । ভেক্টর দুটির scaler গুণফল কত?</span><span class='bcs-tag'>JU:18-19</span>",
+    options: ["3", "5", "9", "11"],
+    answer: 1,
+    explain: "Answer -- (B) <br> ব্যাখ্যাঃ ভেক্টরদ্বয়ের স্কেলার গুণফল বা ডট গুণফল হল $\\vec{A} \\cdot \\vec{B} = (2)(0) + (1)(4) + (-1)(-1) = 0 + 4 + 1 = 5$। সুতরাং প্রদত্ত অপশনগুলোর মধ্যে সঠিক উত্তর হলো 5।"
+  },
+  {
+    id:26,
+    q: "<span>$3\\hat{i}-4\\hat{j}+12\\hat{k}$ ভেক্টরটির মান কত?</span><span class='bcs-tag'>JU:18-19</span>", 
+    options: ["8", "11", "13", "18"],
+    answer: 2,
+    explain: "Answer--(C) <br> ভেক্টরটির মান=$\\sqrt{3^{2}+4^{2}+12^{2}}$"
+  },
+  {
+    id:27,
+    q: "<span>$\\vec{A}=\\hat{i}+2\\hat{j}-2\\hat{k}$ এবং $\\vec{B}=2\\hat{i}+\\hat{j}+\\hat{k}$ হলে তাদের লদ্ধির মান কত?</span><span class='bcs-tag'>JU:16-17</span>",
+    options: ["9", "19", "$\\sqrt{19}$", "6"],
+    answer: 2,
+    explain: "Answer -- (C) <br><br> <b>ব্যাখ্যাঃ</b><br> দুটি ভেক্টরের লদ্ধি (Resultant) হবে <br> $\\vec{R} = \\vec{A} + \\vec{B}$ <br><br> সুতরাং,<br> $\\vec{R} = (1+2)\\hat{i} + (2+1)\\hat{j} + (-2+1)\\hat{k}$ <br> $\\;\\;\\;\\;= 3\\hat{i} + 3\\hat{j} - \\hat{k}$ <br><br> এখন, লদ্ধির মান হবেঃ <br> $|\\vec{R}| = \\sqrt{3^2 + 3^2 + (-1)^2}$ <br> $\\;\\;\\;\\;= \\sqrt{9 + 9 + 1}$ <br> $\\;\\;\\;\\;= \\sqrt{19}$ <br><br> সুতরাং সঠিক উত্তর <b>(C) $\\sqrt{19}$</b>।"
+  },
+  {
+    id:28,
+    q: "<span>$\\vec{P}=5\\hat{i}-\\hat{j}+3\\hat{k}$ এবং $\\vec{Q}=\\hat{k}$ হলে $\\vec{P}\\times\\vec{Q}=?$</span><span class='bcs-tag'>JU:17-18</span>",
+    options: ["$-\\hat{i}-5\\hat{j}$","$\\hat{i}-5\\hat{j}$","$\\hat{i}+\\hat{k}$", "0"],
+    answer: 0,
+    explain: "Answer -- (A) <br><br> <b>ব্যাখ্যাঃ</b><br> দুটি ভেক্টরের ক্রস গুণফল (Cross Product) বের করতে determinant ব্যবহার করা যায়ঃ <br><br> $\\vec{P} \\times \\vec{Q} = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 5 & -1 & 3 \\\\ 0 & 0 & 1 \\end{vmatrix}$ <br><br> $= \\hat{i} \\begin{vmatrix} -1 & 3 \\\\ 0 & 1 \\end{vmatrix} - \\hat{j} \\begin{vmatrix} 5 & 3 \\\\ 0 & 1 \\end{vmatrix} + \\hat{k} \\begin{vmatrix} 5 & -1 \\\\ 0 & 0 \\end{vmatrix}$ <br><br> $= \\hat{i}((-1)(1) - (3)(0)) - \\hat{j}((5)(1) - (3)(0)) + \\hat{k}((5)(0) - (-1)(0))$ <br><br> $= (-1)\\hat{i} - (5)\\hat{j} + (0)\\hat{k}$ <br><br> $= -\\hat{i} - 5\\hat{j}$ <br><br> সুতরাং সঠিক উত্তর <b>(A) $-\\hat{i} - 5\\hat{j}$</b>।"
+  },
+{
+  id: 29,
+  q: "<span>ভেক্টর $\\vec{A}, \\vec{B}, \\vec{C}$ এর মান যথাক্রমে 12,5,13 এবং $\\vec{A}+\\vec{B}=\\vec{C}$ । $\\vec{A}$ ও $\\vec{B}$ এর মধ্যবর্তী কোণের মান কত?</span><span class='bcs-tag'>DU:17-18</span>",
+  options: ["$\\pi/2$","$\\pi/3$", "$\\pi/4$", "$\\pi/6$"],
+  answer: 0,
+  explain: "Answer -- (A) <br><br> <b>ব্যাখ্যাঃ</b><br> আমরা জানি $\\vec{A} + \\vec{B} = \\vec{C}$ এবং $|\\vec{A}| = 12, |\\vec{B}| = 5, |\\vec{C}| = 13।$<br><br> মূল সূত্রটি:<br> $(\\vec{A}+\\vec{B})^2 = \\vec{C}^2 = (\\vec{A}+\\vec{B})\\cdot(\\vec{A}+\\vec{B}) = \\vec{C}\\cdot\\vec{C}$<br> অথবা<br> $|\\vec{C}|^2 = |\\vec{A}|^2 + |\\vec{B}|^2 + 2|\\vec{A}||\\vec{B}|\\cos\\theta$<br><br> সংখ্যা বসিয়ে হিসাব করি:<br> $13^2 = 12^2 + 5^2 + 2(12)(5)\\cos\\theta$<br> $169 = 144 + 25 + 120 \\cos\\theta$<br> $169 = 169 + 120 \\cos\\theta$<br> $\\implies \\cos\\theta = 0$<br><br> সুতরাং $\\theta = \\pi/2$ (90°)।<br><br> ভেক্টর ত্রিভুজের ধারণাঃ $\\vec{A}$ এবং $\\vec{B}$ একত্র হয়ে $\\vec{C}$ তৈরি করছে।<br><br> সঠিক উত্তর: <b>(A) $\\pi/2$</b>।"
+
+}, 
+{
+  id: 30,
+  q: "<span>যদি $\\vec{A}=2\\hat{i}+\\alpha\\hat{j}+\\hat{k}$ এবং $\\vec{B}=-2\\hat{i}+\\hat{j}-2\\hat{k}$ পরস্পর লম্ব হয় তবে $\\alpha$ এর মান কত? </span><span class='bcs-tag'>DU:16-17</span>",
+  options: ["-4", "-6", "6", "-2"],
+  answer: 2,
+  explain: "Answer -- (C) <br><br> <b>ব্যাখ্যাঃ</b><br> দুটি ভেক্টর পরস্পর লম্ব হলে তাদের ডট প্রোডাক্ট শূন্য হয়। অর্থাৎ:<br> $\\vec{A} \\cdot \\vec{B} = 0$<br><br> $\\vec{A} \\cdot \\vec{B} = (2)(-2) + (\\alpha)(1) + (1)(-2)$<br> $= -4 + \\alpha - 2$<br> $= \\alpha - 6$<br><br> শূন্যের সমান করি:<br> $\\alpha - 6 = 0 \\implies \\alpha = 6$<br><br> সুতরাং সঠিক উত্তর: <b>(C) 6</b>।"
+},
+{
+  id: 31,
+  q: "<span>যদি $\\vec{A}=\\hat{i}-\\hat{j}+\\hat{k}$ এবং $\\vec{B}=\\hat{i}+\\hat{j}-\\hat{k}$ একটি সামান্তরিকের দুটি সন্নিহিত বাহু নির্দেশ করে, তাহলে উপযুক্ত এককে সামান্তরিকের ক্ষেত্রফল নির্ণয় করো।</span><span class='bcs-tag'>DU:15-16</span>",
+  options: ["$2\\sqrt{2}$", "2", "1", "$\\sqrt{2}$"],
+  answer: 0,
+  explain: "Answer -- (A) <br><br> <b>ব্যাখ্যাঃ</b><br> একটি সামান্তরিকের ক্ষেত্রফল দুইটি সন্নিহিত বাহুর ভেক্টরের cross product এর magnitude দ্বারা নির্ণয় করা যায়।<br><br> $\\text{Area} = |\\vec{A} \\times \\vec{B}|$<br><br> প্রথমে cross product বের করি:<br> $\\vec{A} \\times \\vec{B} = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 1 & -1 & 1 \\\\ 1 & 1 & -1 \\end{vmatrix}$<br><br> determinant expansion করলে:<br> $\\vec{A} \\times \\vec{B} = \\hat{i}((-1)(-1) - (1)(1)) - \\hat{j}((1)(-1) - (1)(1)) + \\hat{k}((1)(1) - (-1)(1))$<br> $= \\hat{i}(1-1) - \\hat{j}(-1-1) + \\hat{k}(1+1)$<br> $= 0\\hat{i} + 2\\hat{j} + 2\\hat{k}$<br><br> magnitude বের করি:<br> $|\\vec{A} \\times \\vec{B}| = \\sqrt{0^2 + 2^2 + 2^2} = \\sqrt{8} = 2\\sqrt{2}$<br><br> সুতরাং সঠিক উত্তর: <b>(A) $2\\sqrt{2}$</b>।"
+},
+{
+  id: 32,
+  q: "<span>দুইটি ভেক্টর $\\vec{A}=3.0\\hat{i}-3.0\\hat{j}$ এবং $\\vec{B}=5.0\\hat{i}+5.0\\hat{k}$ এর মধ্যবর্তী কোণ কত?</span><span class='bcs-tag'>DU:14-15</span>",
+  options: ["$60^\\circ$", "$30^\\circ$", "$45^\\circ$", "$90^\\circ$"],
+  answer: 0,
+  explain: "Answer -- (A) <br><br> <b>ব্যাখ্যাঃ</b><br> দুটি ভেক্টরের মধ্যবর্তী কোণ $\\theta$ বের করতে dot product ব্যবহার করা হয়:<br><br> $\\vec{A} \\cdot \\vec{B} = |\\vec{A}| |\\vec{B}| \\cos\\theta$<br><br> প্রথমে dot product বের করি:<br> $\\vec{A} \\cdot \\vec{B} = (3)(5) + (-3)(0) + (0)(5) = 15 + 0 + 0 = 15$<br><br> magnitude বের করি:<br> $|\\vec{A}| = \\sqrt{3^2 + (-3)^2 + 0^2} = \\sqrt{9+9} = \\sqrt{18} = 3\\sqrt{2}$<br> $|\\vec{B}| = \\sqrt{5^2 + 0^2 + 5^2} = \\sqrt{25+25} = \\sqrt{50} = 5\\sqrt{2}$<br><br> সুতরাং:<br> $\\cos\\theta = \\frac{\\vec{A} \\cdot \\vec{B}}{|\\vec{A}| |\\vec{B}|} = \\frac{15}{(3\\sqrt{2})(5\\sqrt{2})} = \\frac{15}{30} = \\frac{1}{2}$<br><br> $\\implies \\theta = 60^\\circ$ ✅<br><br> সুতরাং সঠিক উত্তর: <b>(A) $60^\\circ$</b>।"
+},
+
+
+  ]; 
+   
+  // ----------------------------
+  // State
+  // ----------------------------
+  let selectedIds = [];
+  let selectedMap = {}; // { qid: optionIndex }
+  let endTime = null; // epoch seconds
+  let submitted = false;
+  let timerHandle = null;
+  let currentScore = 0;
+  let currentDetails = [];
+
+  const examForm = qs('#exam');
+  const startBtn = qs('#startBtn');
+  const resetBtn = qs('#resetBtn');
+  const submitBtn = qs('#submitBtn');
+  const timerEl = qs('#timer');
+  const summaryEl = qs('#summary');
+  const introEl = qs('#intro');
+  const markModal = qs('#markModal');
+  const closeModalBtn = qs('.close-modal');
+  const cancelMarkBtn = qs('#cancelMarkBtn');
+  const submitMarkBtn = qs('#submitMarkBtn');
+  const studentNameInput = qs('#studentName');
+  const rankingBtn = qs('#rankingBtn');  // এই line টি add করুন
+
+
+  // ----------------------------
+  // Rendering
+  // ----------------------------
+  async function renderQuestions(){
+    examForm.innerHTML = '';
+    const chosen = QUESTIONS.filter(q=>selectedIds.includes(q.id));
+    chosen.forEach((q,idx)=>{
+      const qWrap = document.createElement('section');
+      qWrap.className = 'question';
+      qWrap.setAttribute('data-qid', q.id);
+
+      qWrap.innerHTML = `
+        <div class="q-head">
+          <div class="q-num">${idx+1}</div>
+          <div class="q-text">${q.q}</div>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question ${idx+1}">
+          ${q.options.map((opt,i)=>{
+            const checked = selectedMap[q.id] === i ? 'checked' : '';
+            return `
+              <label class="option">
+                <input type="radio" name="q_${q.id}" value="${i}" ${checked} aria-label="Option ${String.fromCharCode(65+i)}">
+                <div class="opt-text"><strong>(${String.fromCharCode(65+i)})</strong> ${opt}</div>
+              </label>
+            `;}).join('')}
+        </div>
+      `;
+      examForm.appendChild(qWrap);
+    });
+
+    qsa('input[type=radio]', examForm).forEach(inp=>{
+      inp.addEventListener('change', e=>{
+        const qid = parseInt(e.target.name.split('_')[1],10);
+        selectedMap[qid] = parseInt(e.target.value,10);
+        persist();
+      });
+    });
+
+    // Typeset the new content
+    if(window.MathJax) {
+      window.contentRendered = true;
+      await MathJax.typesetPromise();
+    }
+  }
+
+  function renderSummary(score, details){
+    const total = EXAM_SIZE;
+    const correct = details.filter(d=>d.correct).length;
+    const wrong = details.filter(d=>d.user!==null && !d.correct).length;
+    const unanswered = total - correct - wrong;
+
+    summaryEl.classList.remove('hidden');
+    summaryEl.innerHTML = `
+      <div style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap">
+        <div style="display:flex; gap:12px; align-items:center">
+          <span class="score-badge" title="Final Score">Score: ${score.toFixed(2)} / ${total.toFixed(2)}</span>
+          <span class="chip correct-chip">✅ ${correct} correct</span>
+          <span class="chip wrong-chip">❌ ${wrong} wrong</span>
+          <span class="chip unanswered-chip">⏳ ${unanswered} unanswered</span>
+        </div>
+        <div>
+          <button id="submitMarkButton" class="primary" style="margin-right: 8px;">Submit Mark</button>
+          <button onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">Go to Bottom</button>
+        </div>
+      </div>
+    `;
+    // Add event listener to the new button
+    qs('#submitMarkButton').addEventListener('click', showMarkModal);
+  }
+
+  async function markReview(details){
+    details.forEach((d)=>{
+      const sec = qs(`.question[data-qid="${d.id}"]`);
+      if(!sec) return;
+      const labels = qsa('.option', sec);
+      labels.forEach((lbl, idx)=>{
+        lbl.classList.remove('correct','wrong');
+        const inp = lbl.querySelector('input');
+        if(d.user===null) return; // unanswered
+        if(idx===d.answer) lbl.classList.add('correct');
+        if(d.user===idx && idx!==d.answer) lbl.classList.add('wrong');
+      });
+
+      // Explanation
+      let expEl = sec.querySelector('.explanation-container');
+      if(!expEl){
+        expEl = document.createElement('div');
+        expEl.className = 'explanation-container';
+        sec.appendChild(expEl);
+      }
+      const statusClass = d.user===null ? 'unanswered-status' : d.correct ? 'correct-status' : 'wrong-status';
+      const statusText = d.user===null ? 'Unanswered' : d.correct ? 'Correct' : 'Wrong';
+      expEl.innerHTML = `<div class="result-status ${statusClass}">${statusText}</div><p class="explain">${d.explain}</p>`;
+    });
+
+    // Typeset the new content
+    if(window.MathJax) {
+      await MathJax.typesetPromise();
+    }
+  }
+
+  // ----------------------------
+  // Exam Logic
+  // ----------------------------
+  function persist(){
+    saveState({selectedIds, selectedMap, endTime, submitted});
+  }
+
+  function startExam(){
+    introEl.classList.add('hidden');
+
+    const shuffled = [...QUESTIONS];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    selectedIds = shuffled.slice(0, EXAM_SIZE).map(q => q.id);
+    selectedMap = {};
+    submitted = false;
+    endTime = Date.now() + EXAM_MINUTES * 60 * 1000;
+
+    persist();
+    renderQuestions();
+    submitBtn.disabled = false;
+    startTimer();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startTimer(){
+    if(timerHandle) clearInterval(timerHandle);
+    timerHandle = setInterval(()=>{
+      const remaining = Math.floor((endTime - Date.now())/1000);
+      if(remaining<=0){
+        timerEl.textContent = "00:00";
+        clearInterval(timerHandle);
+        submitExam();
+      } else {
+        timerEl.textContent = formatTime(remaining);
+      }
+    }, 1000);
+  }
+
+
+
+
+
+
+
+
+  function submitExam() {
+    if (submitted) return;
+    submitted = true;
+    clearInterval(timerHandle);
+
+    // Exam details
+    const currentDetails = selectedIds.map(qid => {
+        const q = QUESTIONS.find(x => x.id === qid);
+        const userAnswer = selectedMap[qid] !== undefined ? selectedMap[qid] : null;
+        const correct = userAnswer === q.answer;
+        return {
+            id: qid,
+            user: userAnswer,
+            answer: q.answer,
+            correct: correct,
+            explain: q.explain
+        };
+    });
+
+    // Calculate score
+    const currentScore = currentDetails.reduce((acc, d) => {
+        if (d.user === null) return acc;
+        return acc + (d.correct ? 1 : -0.25);
+    }, 0);
+
+    // Render summary and mark review
+    renderSummary(currentScore, currentDetails);
+    markReview(currentDetails);
+
+    // Disable submit button
+    submitBtn.disabled = true;
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // --------------------------------
+    // Check if user is logged in
+    // --------------------------------
+    const name = window.USERNAME || null; // Django template থেকে login user এর name set করা থাকতে হবে, নিচে দেখাবো
+    if (!name) {
+        // Guest user → শুধুমাত্র summary দেখাবে, কোনো ডাটা পাঠাবে না
+        alert("You are not logged in. Your score will not be submitted to the server.");
+        return;
+    }
+
+    // Logged-in user → send data to backend
+    const subject = "Vector";
+    const formData = new FormData();
+    formData.append('studentName', name);
+    formData.append('score', currentScore.toFixed(2));
+    formData.append('total', EXAM_SIZE.toFixed(2));
+    formData.append('percentage', ((currentScore / EXAM_SIZE) * 100).toFixed(2));
+    formData.append('subject', subject);
+
+    fetch("{% url 'submit_exam_result' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Your score has been submitted successfully!');
+            hideMarkModal();
+            // Redirect to ranking page
+            //window.location.href = '/ranking/';
+        } else {
+            throw new Error(data.error || 'Failed to submit score');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error submitting your score. Please try again.');
+    });
+}
+
+
+
+
+
+
+
+
+
+
+  /*
+  function submitExam(){
+    if(submitted) return;
+    submitted = true;
+    clearInterval(timerHandle);
+
+    currentDetails = selectedIds.map(qid=>{
+      const q = QUESTIONS.find(x=>x.id===qid);
+      const user = selectedMap[qid]!==undefined ? selectedMap[qid] : null;
+      const correct = user===q.answer;
+      return {id:qid, user, answer:q.answer, correct, explain:q.explain};
+    });
+
+    currentScore = currentDetails.reduce((acc,d)=>{
+      if(d.user===null) return acc;
+      return acc + (d.correct?1:-0.25);
+    },0);
+
+    renderSummary(currentScore, currentDetails);
+    markReview(currentDetails);
+    submitBtn.disabled = true;
+    persist();
+    
+    // Scroll to top after submitting
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }*/
+
+  function resetExam(){
+    clearState();
+    location.reload();
+  }
+
+  // ----------------------------
+  // Mark Submission Modal
+  // ----------------------------
+  function showMarkModal() {
+    markModal.style.display = 'flex';
+  }
+
+  function hideMarkModal() {
+    markModal.style.display = 'none';
+    studentNameInput.value = '';
+  }
+
+
+
+
+
+  
+  /* এটা চালু থাকলে আমার ইমেইল এ নাম এবং মার্ক চলে আসবে। এখন আর দরকার নাই। পরে use করবো , যদি দরকার হয়। */
+  /*
+  function submitMark() {
+    const name = studentNameInput.value.trim();
+    if (!name) {
+      alert('Please enter your name');
+      return;
+    }
+    const subject = "Vector"; //   add করলাম ।আজকে ২ সেপ্টেম্বর
+    // Prepare the data to send
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('score', currentScore.toFixed(2));
+    formData.append('total', EXAM_SIZE.toFixed(2));
+    formData.append('percentage', ((currentScore / EXAM_SIZE) * 100).toFixed(2) + '%');
+    formData.append('subject', subject);
+    
+    // Send using Formspree
+    fetch('https://formspree.io/f/xwpnvyaw', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Your score has been submitted successfully!');
+        hideMarkModal();
+      } else {
+        throw new Error('Failed to submit score');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('There was an error submitting your score. Please try again.');
+    });
+  }*/ 
+
+
+
+
+
+
+
+
+
+
+  // ----------------------------
+  // Feedback Form Handling
+  // ----------------------------
+  function setupFeedbackForm() {
+    const form = document.getElementById('feedbackForm');
+    const statusEl = document.getElementById('formStatus');
+    
+    form.addEventListener('submit', function(e) {
+      // Show loading state
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending...';
+      statusEl.className = 'form-status';
+      statusEl.textContent = 'Sending your feedback...';
+      statusEl.style.display = 'block';
+      
+      // Allow the form to submit normally to Formspree
+      // Formspree will handle the redirection to their thank you page
+    });
+    
+    // Check if we're returning from Formspree submission
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success')) {
+      statusEl.textContent = 'Thank you for your feedback! We appreciate your input.';
+      statusEl.className = 'form-status success';
+      statusEl.style.display = 'block';
+    }
+  }
+
+// ----------------------------
+// Ranking Function
+// ----------------------------
+function goToRanking() {
+    window.location.href = "{% url 'vec_mcq_rank' %}";
+}
+
+
+  // ----------------------------
+  // Event Listeners
+  // ----------------------------
+  startBtn.addEventListener('click', startExam);
+  submitBtn.addEventListener('click', submitExam);
+  resetBtn.addEventListener('click', resetExam);
+  closeModalBtn.addEventListener('click', hideMarkModal);
+  cancelMarkBtn.addEventListener('click', hideMarkModal);
+  submitMarkBtn.addEventListener('click', submitMark);
+  rankingBtn.addEventListener('click', goToRanking);  // এই line টি add করুন
+
+
+  // ----------------------------
+  // Initialize
+  // ----------------------------
+  const state = loadState();
+  if(state){
+    selectedIds = state.selectedIds || [];
+    selectedMap = state.selectedMap || {};
+    endTime = state.endTime || null;
+    submitted = state.submitted || false;
+    if(selectedIds.length>0){
+      introEl.classList.add('hidden');
+      renderQuestions();
+      if(!submitted){
+        submitBtn.disabled = false;
+        startTimer();
+      } else {
+        submitExam();
+      }
+    }
+  }
+
+
+
+
+
+   
+//Exam Mark দিয়ে Database তৈরি করার জন্য সবশেষে add করেছি।
+// ----------------------------
+// Mark Submission to Django
+// ----------------------------
+/*   
+function submitMark() {
+    const name = studentNameInput.value.trim();
+    if (!name) {
+        alert('Please enter your name');
+        return;
+    }
+    const subject = "Vector";
+    // Prepare the data to send to Django
+    const formData = new FormData();
+    formData.append('studentName', name);
+    formData.append('score', currentScore.toFixed(2));
+    formData.append('total', EXAM_SIZE.toFixed(2));
+    formData.append('percentage', ((currentScore / EXAM_SIZE) * 100).toFixed(2));
+    formData.append('subject', subject);
+    // Send to Django backend
+    fetch("{% url 'submit_exam_result' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'), // CSRF token handling
+            'X-Requested-With': 'XMLHttpRequest'  // এই line add করুন
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Your score has been submitted successfully!');
+            hideMarkModal();
+            
+            // Redirect to ranking page
+            window.location.href = '/ranking/'; //এখানে ranking এর কাজ নাই তো।
+        } else {
+            throw new Error(data.error || 'Failed to submit score');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error submitting your score. Please try again.');
+    });
+} */
+
+
+  
+  function submitMark() {
+    const name = studentNameInput.value.trim();
+    if (!name) {
+      alert('Please enter your name');
+      return;
+    }
+    const subject = "Vector"; //   add করলাম ।আজকে ২ সেপ্টেম্বর
+    // Prepare the data to send
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('score', currentScore.toFixed(2));
+    formData.append('total', EXAM_SIZE.toFixed(2));
+    formData.append('percentage', ((currentScore / EXAM_SIZE) * 100).toFixed(2) + '%');
+    formData.append('subject', subject);
+    
+    // Send using Formspree
+    fetch('https://formspree.io/f/xwpnvyaw', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Your score has been submitted successfully!');
+        hideMarkModal();
+      } else {
+        throw new Error('Failed to submit score');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('There was an error submitting your score. Please try again.');
+    });
+  }
+
+
+
+
+   
+
+// CSRF token function
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }                    
+        }
+    }
+    return cookieValue;
+}
+            
+// ----------------------------
+// Event Listeners - Mark Modal
+// ----------------------------
+submitMarkBtn.addEventListener('click', submitMark);
+
+// ----------------------------
+// Feedback Form Handling
+// ----------------------------
+function setupFeedbackForm() {
+    const form = document.getElementById('feedbackForm');
+    const statusEl = document.getElementById('formStatus');
+    
+    form.addEventListener('submit', function(e) {
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+        statusEl.className = 'form-status';
+        statusEl.textContent = 'Sending your feedback...';
+        statusEl.style.display = 'block';
+        
+        // Allow the form to submit normally to Formspree
+        // Formspree will handle the redirection to their thank you page
+    });
+    
+    // Check if we're returning from Formspree submission
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success')) {
+        statusEl.textContent = 'Thank you for your feedback! We appreciate your input.';
+        statusEl.className = 'form-status success';
+        statusEl.style.display = 'block';
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Setup feedback form
+  setupFeedbackForm();
+  </script>
+{% endblock %}  

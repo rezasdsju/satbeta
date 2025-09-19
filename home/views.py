@@ -1255,3 +1255,6 @@ def varsity_calculate_grade_and_gpa(mark, full_mark):
         return 'F', 0.00      
 
 
+def mcq_hub_view(request):
+    return render(request, 'home/mcq/mcq_hub.html')
+

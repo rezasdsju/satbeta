@@ -41,4 +41,13 @@ urlpatterns = [
     path('varsity-download-all-csv/', views.varsity_download_all_csv, name='varsity_download_all_csv'),
     path('varsity-download-all-pdf/', views.varsity_download_all_pdf, name='varsity_download_all_pdf'),
     path('varsity-clear-all-results/', views.varsity_clear_all_results, name='varsity_clear_all_results'),
+
+
+    path('mcq_hub/', views.mcq_hub_view, name='mcq_hub'),
+    path('vector_main_mcq/', views.vector_mcq_view, name='vector_main_mcq'),
+    path('narration/', views.narration_view, name='narration'),
+    path('vocabulary/', views.vocabulary_view, name='vocab_main'),
+    path('bcs_english/', views.bcs_english_view, name='bcs_english'),
+    path("ranking/", views.ranking_view, name="vec_mcq_rank"),
+    path("submit_exam_result/", views.submit_exam, name="submit_exam_result"),
 ]

@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}University Student Result{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Main content container */
+    .main-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    /* Header Section */
+    .page-header {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 2.2rem;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .page-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, #43cbff, #9708cc);
+        border-radius: 2px;
+    }
+    
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    /* Card Styles */
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(90deg, #43cbff, #9708cc);
+        padding: 20px 30px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+    
+    .card-body {
+        padding: 30px;
+    }
+    
+    .gpa-display {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        text-align: center;
+        border-left: 4px solid #43cbff;
+    }
+    
+    .gpa-display h4 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    /* Table Styles */
+    .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    
+    .result-table th {
+        background: linear-gradient(90deg, #2c3e50, #4a6491);
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    .result-table tr {
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .result-table tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .result-table tr:hover {
+        background-color: #e9ecef;
+    }
+    
+    .result-table td {
+        padding: 15px;
+        color: #495057;
+    }
+    
+    /* Button Styles */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        gap: 8px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(90deg, #43cbff, #9708cc);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(90deg, #FF6B6B, #FF9E7D);
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-success {
+        background: linear-gradient(90deg, #4CD964, #2AB573);
+        color: white;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-secondary {
+        background: #f8f9fa;
+        color: #495057;
+        border: 1px solid #dee2e6;
+    }
+    
+    .btn-secondary:hover {
+        background: #e9ecef;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+    
+    .back-button-container {
+        text-align: center;
+        margin: 30px 0;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        margin: 20px 0;
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+    
+    /* Responsive styles */
+    @media screen and (max-width: 992px) {
+        .btn-group {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+    }
+    
+    @media screen and (max-width: 768px) {
+        .main-container {
+            padding: 15px;
+        }
+        
+        .page-header, .card {
+            padding: 20px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+        }
+        
+        .result-table {
+            display: block;
+            overflow-x: auto;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .card-body {
+            padding: 15px;
+        }
+        
+        .result-table th, 
+        .result-table td {
+            padding: 10px;
+        }
+    }
+    
+    /* Error message styling */
+    .error-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: 600px;
+        margin: 50px auto;
+    }
+    
+    .error-title {
+        color: #dc3545;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="page-header">
+        <h1 class="page-title">University Student Results</h1>
+        <div class="btn-group">
+            <a href="{% url 'varsity_download_all_pdf' %}" class="btn btn-primary">
+                <i class="fas fa-file-pdf"></i> Export All to PDF
+            </a>
+            <a href="{% url 'varsity_download_all_csv' %}" class="btn btn-success">
+                <i class="fas fa-file-csv"></i> Export All to CSV
+            </a>
+            <form method="POST" action="{% url 'varsity_clear_all_results' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to clear all data? This action cannot be undone.')">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if all_results %}
+        {% for result in all_results %}
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ result.student_name }} - {{ result.semester }}</h3>
+                <span>Created: {{ result.created_at|date:"M d, Y" }}</span>
+            </div>
+            <div class="card-body">
+                <div class="gpa-display">
+                    <h4>Overall GPA: {{ result.overall_gpa }}</h4>
+                </div>
+                
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Mark</th>
+                            <th>Full Mark</th>
+                            <th>Credit</th>
+                            <th>Grade</th>
+                            <th>GPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject in result.subjects_list %}
+                        <tr>
+                            <td>{{ subject.name }}</td>
+                            <td>{{ subject.mark }}</td>
+                            <td>{{ subject.sub_full_mark }}</td>
+                            <td>{{ subject.credit }}</td>
+                            <td>{{ subject.grade }}</td>
+                            <td>{{ subject.gpa }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'varsity_download_single_pdf' result.id %}" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Export PDF
+                    </a>
+                    <a href="{% url 'varsity_download_single_csv' result.id %}" class="btn btn-success">
+                        <i class="fas fa-download"></i> Export CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>No results found. Create your first result sheet!</p>
+            <a href="{% url 'varsity_mark_input' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create Result
+            </a>
+        </div>
+    {% endif %}
+    
+    <div class="back-button-container">
+        <a href="{% url 'varsity_mark_input' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Form
+        </a>
+        <a href="{% url 'index' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -23,4 +23,22 @@ urlpatterns = [
     path('pdf-hub/', views.pdf_hub_view, name='pdf_hub'),
     path('vector-pdf/', views.vector_pdf_view, name='vec_pdf'),
     path('pdf/upload/', views.upload_pdf, name='upload_pdf'),
+
+    path('result_for/', views.result_for_view, name='result_for'),
+    # Result system URLs
+    path('school_mark_input/', views.school_mark_input, name='school_mark_input'),
+    path('show_school_result/', views.show_school_result, name='show_school_result'),
+    path('download_single_csv/<int:result_id>/', views.download_single_csv, name='download_single_csv'),
+    path('download_single_pdf/<int:result_id>/', views.download_single_pdf, name='download_single_pdf'),
+    path('download_all_csv/', views.download_all_csv, name='download_all_csv'),
+    path('download_all_pdf/', views.download_all_pdf, name='download_all_pdf'),
+    path('clear_all_results/', views.clear_all_results, name='clear_all_results'),
+    # University result system URLs
+    path('varsity-mark-input/', views.varsity_mark_input, name='varsity_mark_input'),
+    path('show-varsity-result/', views.show_varsity_result, name='show_varsity_result'),
+    path('varsity-download-single-csv/<int:result_id>/', views.varsity_download_single_csv, name='varsity_download_single_csv'),
+    path('varsity-download-single-pdf/<int:result_id>/', views.varsity_download_single_pdf, name='varsity_download_single_pdf'),
+    path('varsity-download-all-csv/', views.varsity_download_all_csv, name='varsity_download_all_csv'),
+    path('varsity-download-all-pdf/', views.varsity_download_all_pdf, name='varsity_download_all_pdf'),
+    path('varsity-clear-all-results/', views.varsity_clear_all_results, name='varsity_clear_all_results'),
 ]

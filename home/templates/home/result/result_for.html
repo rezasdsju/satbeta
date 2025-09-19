@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Result Sheet Options{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container {
+        max-width: 600px;
+        width: 90%;
+        margin: 20px auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+        color: #fff;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+
+    .option-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+        margin: 20px 0;
+        text-decoration: none;
+        color: #fff;
+        background: linear-gradient(45deg, #43cbff, #9708cc);
+        border-radius: 50px;
+        font-size: 1.2em;
+        font-weight: bold;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .option-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .option-button i {
+        margin-right: 10px;
+        font-size: 1.5em;
+    }
+    
+    .back-button {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 10px 30px;
+        text-decoration: none;
+        background-color: transparent;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 50px;
+        font-weight: bold;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .back-button:hover {
+        background-color: #fff;
+        color: #764ba2;
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+        .option-button {
+            font-size: 1em;
+            padding: 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.6rem;
+        }
+        .container {
+            padding: 20px;
+        }
+        .option-button {
+            font-size: 0.9em;
+            padding: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class='container'>
+    <h1>Select Result Sheet Type</h1>
+    <a href="{% url 'school_mark_input' %}" class='option-button'>
+        <i class="fas fa-school"></i>
+        Result Sheet for School/College
+    </a>
+    <a href="{% url 'varsity_mark_input' %}" class='option-button'>
+        <i class="fas fa-university"></i>
+        Result Sheet for University
+    </a>
+    <a href='{% url "index" %}' class='back-button'>
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add active class to the Result Sheet navigation item
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.textContent.includes('Create Result Sheet')) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+{% endblock %}

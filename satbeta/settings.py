@@ -19,18 +19,19 @@ load_dotenv(BASE_DIR / ".env")
 # SECURITY
 # -------------------------
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-default-key")
-#DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
-"""
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+
 ALLOWED_HOSTS = [
     "161.248.189.240",
     "satbeta.top",
     "www.satbeta.top",
-]"""
+]
 
 # Debug mode enable করুন
-DEBUG = True
+#DEBUG = True
 
 # Allowed hosts এ localhost add করুন
+"""
 ALLOWED_HOSTS = [
     "161.248.189.240",
     "satbeta.top", 
@@ -38,6 +39,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
 ]
+"""
 
 # -------------------------
 # INSTALLED APPS
@@ -177,6 +179,14 @@ SESSION_COOKIE_SECURE = False
 """
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True"""
+
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+
+
+
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True

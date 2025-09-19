@@ -1258,3 +1258,122 @@ def varsity_calculate_grade_and_gpa(mark, full_mark):
 def mcq_hub_view(request):
     return render(request, 'home/mcq/mcq_hub.html')
 
+def narration_view(request):
+    return render(request, 'home/mcq/narration.html')
+
+def vocabulary_view(request): 
+    return render(request, 'home/mcq/vocab_main.html')
+
+def bcs_english_view(request):
+    return render(request, 'home/mcq/bcs_english.html')
+def vector_mcq_view(request):
+    return render(request, 'home/mcq/vector_main_mcq.html')
+
+
+
+
+
+@require_POST
+@csrf_exempt
+def submit_exam(request):
+    if request.method == "POST":
+        # Check if it's AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Form data থেকে name এবং score নিন
+            name = request.POST.get("studentName")
+            score = request.POST.get("score")
+            total = request.POST.get("total", 10)
+            
+            subject = request.POST.get("subject")  # ডিফল্ট রাখুন
+
+            # যদি subject ফাঁকা থাকে, fallback দিন
+            if not subject:
+                subject = "General"
+            
+            # Student create or get
+            student, created = Student.objects.get_or_create(
+                name=name, 
+                defaults={'email': f'{name.lower().replace(" ", "")}@example.com'}
+            )
+            
+            # Exam save
+            Exam.objects.create(
+                student=student, 
+                subject=subject, 
+                score=float(score),
+                total_marks=float(total)
+            )
+            
+            return JsonResponse({'success': True})
+        
+        else:
+            # Handle regular form submission (যদি form থাকে)
+            return JsonResponse({'success': False, 'error': 'Invalid request type'})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+def ranking_view(request):
+    # Subject এবং name filter করার জন্য
+    subject = request.GET.get('subject', '')
+    search_name = request.GET.get('search_name', '')
+    
+    # Calculate cumulative scores for each student
+    from django.db.models import Sum, Min, Count
+    cumulative_scores = Exam.objects.values('student__name', 'subject').annotate(
+        total_score=Sum('score'),
+        total_marks=Sum('total_marks'),
+        first_exam_date=Min('date_taken'),
+        number_of_exam=Count('id')
+    )
+
+    # Apply filters
+    if subject:
+        cumulative_scores = cumulative_scores.filter(subject=subject)
+    
+    # Calculate points for each student
+    students_with_points = []
+    for item in cumulative_scores:
+        if item['total_marks'] and item['total_marks'] > 0:
+            points = item['total_score'] 
+        else:
+            points = 0
+            
+        students_with_points.append({
+            'name': item['student__name'],
+            'subject': item['subject'],
+            'points': round(points, 2),
+            'total_score': item['total_score'],
+            'total_marks': item['total_marks'],
+            'first_exam_date': item['first_exam_date']
+        })
+
+    # Sort by points descending
+    students_with_points.sort(key=lambda x: (-x['points'], x['first_exam_date']))
+
+    # Assign ranks based on points (সমস্ত শিক্ষার্থীর জন্য র‍্যাঙ্ক নির্ধারণ)
+    ranked_students = []
+    for index, student in enumerate(students_with_points, start=1):
+        ranked_students.append({
+            'rank': index,
+            'name': student['name'],
+            'subject': student['subject'],
+            'points': student['points']
+        })
+
+    # এখন নাম দিয়ে ফিল্টার করুন (র‍্যাঙ্ক নির্ধারণের পরে)
+    if search_name:
+        ranked_students = [student for student in ranked_students 
+                          if search_name.lower() in student['name'].lower()]
+
+    # সব unique subject এর list
+    all_subjects = Exam.objects.values_list('subject', flat=True).distinct()
+
+    return render(request, 'home/mcq/vec_mcq_rank.html', {
+        'rankings': ranked_students,
+        'subjects': all_subjects,
+        'selected_subject': subject,
+        'search_name': search_name
+    })
+
+# New result system views
+

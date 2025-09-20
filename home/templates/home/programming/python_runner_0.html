@@ -91,6 +91,18 @@
     margin-top: 20px;
     margin-bottom: 10px;
 }
+.discussion-content p {
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+.discussion-content pre {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 15px 0;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -120,6 +132,18 @@
                 </h2>
                 <div class="discussion-content">
                     <h3> XYZ</h3>
+                    <p>Program লেখার সময় আমাদের অনেক রকম কাজ করতে হতে পারে। কী কী কাজ করতে হবে, টা নির্ভর করে আমরা আসলে প্রোগ্রাম দিয়ে কী করতে চাইছি তার উপর। যেমন আমরা গাণিতিক সমস্যার সমাধানের জন্য প্রোগ্রাম লিখতে পারি, অপারেটিং সিস্টেম এর সঙ্গে কাজ করার জন্য
+                        প্রোগ্রাম লিখতে পারি, ইন্টারনেট এ যুক্ত হয়ে ডাটা আদান-প্রদানের জন্য প্রোগ্রাম লিখতে পারি,ছবি ভিডিও ইত্যাদি নিয়ে কাজ করতে পারি, কোন games তৈরি করতে পারি। এরকম কত কি যে করা যায় প্রোগ্রামিং দিয়ে তার হিসাব নাই।
+                        এখন programmer দের কাজ সহজ করার জন্য অনেক module তৈরি করে দেওয়া আছে। আবার একাধিক module একসঙ্গে করে package ও তৈরি করে দেওয়া আছে। 
+                        Module গুলতে থাকে বিভিন্ন data,function ও class<br><br>
+                        আমরা বিভিন্ন প্রোগ্রাম এ print(), input(), type(), sum() ইত্যাদি function ব্যবহার করেছি, সেগুলো কিন্তু আমরা নিজেরা তৈরি করি নি, ব্যবহার করেছি কেবল। এগুলকে built-in function বলে।
+                        built-in শব্দের অর্থ হল যেগুলো কোন কিছুর সঙ্গে দেওয়া থাকে, অর্থাৎ এগুলো আলাদাভাবে যোগ করতে হয় না। Python এর built-in function গুলো Python interpreter এর সঙ্গেই থাকে, তাই এগুলো সরাসরি ব্যবহার করা যায়। built-in function গুলো builtins নামক module এ তৈরি করে রাখা আছে।
+                        builtins module এ কী কী আছে সেটা জানার জন্য আমরা নিচের কোড run করে দেখতে পারি।
+                    </p>
+                    <pre>
+                        import builtins
+                        dir(builtins)
+                    </pre>
                 </div>
             </div>
         </div>

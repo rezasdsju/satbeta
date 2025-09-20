@@ -12,11 +12,11 @@
 
 <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
 <style>
-.container{
+.container {
     max-width: 10000px;
     margin: 2px auto;
 }
-.python-runner-container{
+.python-runner-container {
     width: 100%;
     background: rgba(255,255,255,0.95);
     border-radius: 15px;
@@ -24,7 +24,7 @@
     overflow: hidden;
     margin: 0px auto;
 }
-.python-runner-header{
+.python-runner-header {
     background: #2c3e50;
     color: white;
     padding: 0px;
@@ -54,13 +54,42 @@
     flex-direction: column;
     justify-content: center; /* vertical centering of h1 + subtitle */
 }
-.python-runner-header h1{
+.python-runner-header h1 {
     font-size: 2rem;
     margin-bottom: 10px;
 }
-.python-runner-header .subtitle{
+.python-runner-header .subtitle {
     font-size: 1rem;
     opacity: 0.8
+}
+.three-column-layout {
+    display: flex;
+    height: 70vh
+}
+.discussion-section {
+    flex: 1;
+    padding: 20px;
+    background: #f8f9fa;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+}
+.section-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+}
+.section-title i {
+    margin-right: 10px;
+}
+.discussion-content {
+    line-height: 1.6;
+}
+.discussion-content h3{
+    color: #2c3e50;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 </style>
 {% endblock %}
@@ -82,6 +111,16 @@
                 <button id="theme-toggle" class="theme-toggle">
                     <i class="fas fa-moon"></i> Dark Mode
                 </button>
+            </div>
+        </div>
+        <div class="three-column-layout">
+            <div class="discusion-content">
+                <h2 class="section-title">
+                    <i class="fas fa -comments"></i>Module and Packages
+                </h2>
+                <div class="discussion-content">
+                    <h3> XYZ</h3>
+                </div>
             </div>
         </div>
     </div>

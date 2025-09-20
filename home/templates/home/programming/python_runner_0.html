@@ -126,7 +126,7 @@
             </div>
         </div>
         <div class="three-column-layout">
-            <div class="discusion-content">
+            <div class="discussion-content">
                 <h2 class="section-title">
                     <i class="fas fa -comments"></i>Module and Packages
                 </h2>
@@ -144,6 +144,18 @@
                         import builtins
                         dir(builtins)
                     </pre>
+                    <p>dir() নিজেও একটি built-in function যার ভিতরে কোন module এর নাম আর্গুমেন্ট হিসেবে পাঠালে ওই module এ কী কী গ্লোবাল variable,function,class ইত্যাদি আছে এগুল সে একটি list এ return করে।</p>
+                    <h3>Standard Library</h3>
+                    <p>
+                        built-in function ছাড়াও কিন্তু আমরা বিভিন্ন module import করে ব্যবহার করি। Mathematical calculation যেমন-sqrt,power calculation 
+                        ইত্যাদি করার জন্য math module import করে নিতে হয়। math module টি হল python এর একটি standard library এর module. এখানে বিভিন্ন 
+                        গাণিতিক function তৈরি করে দেওয়া আছে। 
+                    </p>
+                    <pre>
+                        import math
+                        math.pow(2,3)
+                    </pre>
+                    output=8.0
                 </div>
             </div>
         </div>

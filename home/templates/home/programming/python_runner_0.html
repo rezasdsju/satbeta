@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Module and Packeages {% endblock %}
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/eclipse.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+<style>
+/*
+পড়ে করবো 
+*/
+</style>
+{% endblock %}
+{% block content %}
+<div class='container'>
+    <div class='python-runner-container'>
+        <div class='python-runner-header'>
+            <div class='header-content'>
+                <h1><i class='fas fa-code'></i>Object Oriented Programming|Module and Packages</h1>
+                <p class="subtitle">Learn Python OOP concepts with real examples</p>
+                <p class="subtitle">Write, run and test your Python code directly in the browser.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

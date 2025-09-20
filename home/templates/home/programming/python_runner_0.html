@@ -35,8 +35,24 @@
     flex-wrap: wrap;
     
 }
-.header-content{
-    flex: 1;
+        .header-content {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+        }
+.header-left {
+    display: flex;
+    align-items: center; /* vertical alignment */
+    justify-content: center; /* horizontal alignment */
+    gap: 15px;
+    flex: 1; /* take available space */
+}
+.header-left > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical centering of h1 + subtitle */
 }
 .python-runner-header h1{
     font-size: 2rem;
@@ -49,13 +65,22 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class='container'>
-    <div class='python-runner-container'>
-        <div class='python-runner-header'>
-            <div class='header-content'>
-                <h1>Object Oriented Programming|Module and Packages</h1>
-                <p class="subtitle">Learn Python OOP concepts with real examples</p>
-                <p class="subtitle">Write, run and test your Python code directly in the browser.</p>
+<div class="container">
+    <div class="python-runner-container">
+        <div class="python-runner-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div>
+                        <h1><i class="fas fa-code"></i> Python Code Runner</h1>
+                        <p class="subtitle">With pandas, numpy, and matplotlib support</p>
+                    </div>
+                    <button id="toggle-editor-btn" class="toggle-editor-btn">
+                        <i class="fas fa-times"></i> Close Editor
+                    </button>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i> Dark Mode
+                </button>
             </div>
         </div>
     </div>

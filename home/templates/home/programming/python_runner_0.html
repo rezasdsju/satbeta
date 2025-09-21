@@ -1,47 +1,73 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}OOP|Module & Packeages|SAT {% endblock %}
+{% block title %}Python Introduction | SAT {% endblock %}
 {% block extra_js %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/eclipse.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/eclipse.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
-<style>
-.container {
-    max-width: 10000px;
-    margin: 2px auto;
-}
-.python-runner-container {
-    width: 100%;
-    background: rgba(255,255,255,0.95);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    overflow: hidden;
-    margin: 0px auto;
-}
-.python-runner-header {
-    background: #2c3e50;
-    color: white;
-    padding: 0px;
-    text-align: center;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    
-}
-.header-content {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+{% endblock %}
+{% block extra_css %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
             
-}
+        }
+        
+        .python-runner-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 0px auto;
+            
+        }
+
+
+
+
+        
+        .python-runner-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            
+        }
+        
+        .header-content {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+        }
+
 .header-left {
     display: flex;
     align-items: center; /* vertical alignment */
@@ -49,116 +75,971 @@
     gap: 15px;
     flex: 1; /* take available space */
 }
+
 .header-left > div {
     display: flex;
     flex-direction: column;
     justify-content: center; /* vertical centering of h1 + subtitle */
 }
-.python-runner-header h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-}
-.python-runner-header .subtitle {
-    font-size: 1rem;
-    opacity: 0.8
-}
-.three-column-layout {
-    display: flex;
-    height: 70vh
-}
-.discussion-section {
-    flex: 1;
-    padding: 20px;
-    background: #f8f9fa;
-    border-right: 1px solid #eee;
-    overflow-y: auto;
-}
-.section-title {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    color: #2c3e50;
-    display: flex;
-    align-items: center;
-}
-.section-title i {
-    margin-right: 10px;
-}
-.discussion-content {
-    line-height: 1.6;
-}
-.discussion-content h3{
-    color: #2c3e50;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-.discussion-content p {
-    margin-bottom: 15px;
-    color: #2c3e50;
-}
-.discussion-content pre {
-    background-color: #2c3e50;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    overflow-x: auto;
-    margin: 15px 0;
-}
-</style>
+
+        
+        .python-runner-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .python-runner-header .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .theme-toggle i {
+            margin-right: 8px;
+        }
+        
+        .toggle-editor-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-editor-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .toggle-editor-btn i {
+            margin-right: 8px;
+        }
+        
+        .three-column-layout {
+            display: flex;
+            height: 60vh;
+        }
+        
+        .discussion-section {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border-right: 1px solid #eee;
+            overflow-y: auto;
+        }
+        
+        .code-section {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            border-right: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .output-section {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .CodeMirror {
+            width: 100%;
+            height: 100% !important;
+            min-height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .runner-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .runner-btn i {
+            margin-right: 8px;
+        }
+        
+        #run-btn {
+            background: #27ae60;
+            color: white;
+            flex: 2;
+        }
+        
+        #run-btn:hover {
+            background: #219653;
+            transform: translateY(-2px);
+        }
+        
+        #clear-btn {
+            background: #e74c3c;
+            color: white;
+            flex: 1;
+        }
+        
+        #clear-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .save-load-btns {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .save-btn, .load-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .save-btn:hover, .load-btn:hover {
+            background: #2980b9;
+        }
+        
+        .output-container {
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            height: 100%;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            flex-grow: 1;
+        }
+        
+        #output {
+            white-space: pre-wrap;
+            line-height: 1.5;
+            height: 100%;
+        }
+        
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .loading {
+            background: #3498db;
+            color: white;
+        }
+        
+        .success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .error {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .collapsed {
+            flex: 0;
+            padding: 0;
+            overflow: hidden;
+            border-right: none;
+        }
+        
+        .full-width {
+            flex: 3;
+        }
+        
+        .examples {
+            margin-top: 20px;
+            padding: 0 20px 20px;
+        }
+        
+        .examples h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .example-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .example-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        
+        .example-btn:hover {
+            background: #2980b9;
+        }
+        
+        .package-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        
+        .discussion-content {
+            line-height: 1.6;
+        }
+        
+        .discussion-content h3 {
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .discussion-content p {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .discussion-content code {
+            background-color: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+        
+        .discussion-content pre {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .discussion-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .discussion-content li {
+            margin-bottom: 8px;
+        }
+
+        .back-buttons {
+            margin-top: 20px;
+        }
+
+        .back-buttons a {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .back-buttons a:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: white;
+        }
+        
+        /* Dark theme styles */
+        .dark-theme .python-runner-container {
+            background: rgba(35, 40, 50, 0.95);
+        }
+        
+        .dark-theme .discussion-section {
+            background: #2a2f3b;
+            color: #e9ecef;
+            border-right: 1px solid #444;
+        }
+        
+        .dark-theme .code-section {
+            background: #2a2f3b;
+            border-right: 1px solid #444;
+        }
+        
+        .dark-theme .output-section {
+            background: #2a2f3b;
+        }
+        
+        .dark-theme .section-title {
+            color: #e9ecef;
+        }
+        
+        .dark-theme .discussion-content h3 {
+            color: #e9ecef;
+        }
+        
+        .dark-theme .discussion-content p {
+            color: #e9ecef;
+        }
+        
+        .dark-theme .discussion-content ul {
+            color: #e9ecef;
+        }
+        
+        .dark-theme .discussion-content code {
+            background-color: #3a3f4b;
+            color: #e9ecef;
+        }
+        
+        .dark-theme .examples h3 {
+            color: #e9ecef;
+        }
+        
+        .dark-theme .package-info {
+            background: #3a3f4b;
+            color: #e9ecef;
+        }
+        
+        /* Plot container */
+        .plot-container {
+            margin-top: 15px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .dark-theme .plot-container {
+            background: #2a2f3b;
+        }
+        
+        .plot-container img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 992px) {
+            .three-column-layout {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .discussion-section {
+                height: 300px;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .code-section {
+                height: 400px;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .output-section {
+                height: 300px;
+            }
+            
+            .python-runner-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .header-left {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .theme-toggle, .toggle-editor-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .collapsed {
+                height: 0;
+                padding: 0;
+                border-bottom: none;
+            }
+            
+            .full-width {
+                height: auto;
+            }
+        }
+    </style>
 {% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="python-runner-container">
-        <div class="python-runner-header">
-            <div class="header-content">
-                <div class="header-left">
-                    <div>
-                        <h1>OOP | Module and Packages</h1>
-                        <p class="subtitle">Learn Python OOP concepts with real examples</p>
-                        <p class="subtitle">Write,run and test your Python code directly in the browser</p>
+    <div class="container">
+        <div class="python-runner-container">
+            <div class="python-runner-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <div>
+                            <h1><i class="fas fa-code"></i>Python Introduction</h1>
+                        </div>
                     </div>
                     <button id="toggle-editor-btn" class="toggle-editor-btn">
                         <i class="fas fa-times"></i> Close Editor
                     </button>
+                    <button id="theme-toggle" class="theme-toggle">
+                        <i class="fas fa-moon"></i> Dark Mode
+                    </button>
                 </div>
-                <button id="theme-toggle" class="theme-toggle">
-                    <i class="fas fa-moon"></i> Dark Mode
-                </button>
             </div>
-        </div>
-        <div class="three-column-layout">
-            <div class="discussion-content">
-                <h2 class="section-title">
-                    <i class="fas fa -comments"></i>Module and Packages
-                </h2>
-                <div class="discussion-content">
-                    <h3> XYZ</h3>
-                    <p>Program লেখার সময় আমাদের অনেক রকম কাজ করতে হতে পারে। কী কী কাজ করতে হবে, টা নির্ভর করে আমরা আসলে প্রোগ্রাম দিয়ে কী করতে চাইছি তার উপর। যেমন আমরা গাণিতিক সমস্যার সমাধানের জন্য প্রোগ্রাম লিখতে পারি, অপারেটিং সিস্টেম এর সঙ্গে কাজ করার জন্য
-                        প্রোগ্রাম লিখতে পারি, ইন্টারনেট এ যুক্ত হয়ে ডাটা আদান-প্রদানের জন্য প্রোগ্রাম লিখতে পারি,ছবি ভিডিও ইত্যাদি নিয়ে কাজ করতে পারি, কোন games তৈরি করতে পারি। এরকম কত কি যে করা যায় প্রোগ্রামিং দিয়ে তার হিসাব নাই।
-                        এখন programmer দের কাজ সহজ করার জন্য অনেক module তৈরি করে দেওয়া আছে। আবার একাধিক module একসঙ্গে করে package ও তৈরি করে দেওয়া আছে। 
-                        Module গুলতে থাকে বিভিন্ন data,function ও class<br><br>
-                        আমরা বিভিন্ন প্রোগ্রাম এ print(), input(), type(), sum() ইত্যাদি function ব্যবহার করেছি, সেগুলো কিন্তু আমরা নিজেরা তৈরি করি নি, ব্যবহার করেছি কেবল। এগুলকে built-in function বলে।
-                        built-in শব্দের অর্থ হল যেগুলো কোন কিছুর সঙ্গে দেওয়া থাকে, অর্থাৎ এগুলো আলাদাভাবে যোগ করতে হয় না। Python এর built-in function গুলো Python interpreter এর সঙ্গেই থাকে, তাই এগুলো সরাসরি ব্যবহার করা যায়। built-in function গুলো builtins নামক module এ তৈরি করে রাখা আছে।
-                        builtins module এ কী কী আছে সেটা জানার জন্য আমরা নিচের কোড run করে দেখতে পারি।
-                    </p>
-                    <pre>
-                        import builtins
-                        dir(builtins)
-                    </pre>
-                    <p>dir() নিজেও একটি built-in function যার ভিতরে কোন module এর নাম আর্গুমেন্ট হিসেবে পাঠালে ওই module এ কী কী গ্লোবাল variable,function,class ইত্যাদি আছে এগুল সে একটি list এ return করে।</p>
-                    <h3>Standard Library</h3>
-                    <p>
-                        built-in function ছাড়াও কিন্তু আমরা বিভিন্ন module import করে ব্যবহার করি। Mathematical calculation যেমন-sqrt,power calculation 
-                        ইত্যাদি করার জন্য math module import করে নিতে হয়। math module টি হল python এর একটি standard library এর module. এখানে বিভিন্ন 
-                        গাণিতিক function তৈরি করে দেওয়া আছে। 
-                    </p>
-                    <pre>
-                        import math
-                        math.pow(2,3)
-                    </pre>
-                    output=8.0
+            
+            <div class="three-column-layout">
+                <!-- Left Column: Discussion/Tutorial (1/3 width) -->
+                <div class="discussion-section">
+                    <h2 class="section-title">পাইথন কী?</h2>
+                    <div class="discussion-content">
+                        <p>পাইথন হলো একটি জনপ্রিয় প্রোগ্রামিং ভাষা। এটি তৈরি করেছেন Guido van Rossum, এবং ১৯৯১ সালে প্রকাশিত হয়।</p>
+                        <h3>পাইথন কোথায় ব্যবহার হয়?</h3>
+                        <ul>
+                            <li>ওয়েব ডেভেলপমেন্ট (সার্ভার-সাইড)</li>
+                            <li>সফটওয়্যার ডেভেলপমেন্ট</li>
+                            <li>গণিত</li>
+                            <li>সিস্টেম স্ক্রিপ্টিং</li>
+                            <li>ডাটা সায়েন্স</li>
+                        </ul>
+                        <h3>পাইথন কী করতে পারে?</h3>
+                        <ul>
+                            <li>পাইথন ব্যবহার করে সার্ভারে ওয়েব অ্যাপ্লিকেশন তৈরি করা যায়।</li>
+                            <li>সফটওয়্যারের সাথে মিলিয়ে ওয়ার্কফ্লো তৈরি করা যায়।</li>
+                            <li>পাইথন ডাটাবেস সিস্টেমের সাথে সংযোগ করতে পারে। এছাড়াও এটি ফাইল পড়া এবং পরিবর্তন করতেও ব্যবহার করা যায়।</li>
+                            <li>পাইথন বড় ডেটা পরিচালনা করতে এবং জটিল গণিত করার জন্য ব্যবহার করা যায়।</li>
+                            <li>পাইথন দ্রুত প্রোটোটাইপ তৈরি করতে, বা প্রোডাকশন-রেডি সফটওয়্যার ডেভেলপমেন্ট করার জন্য ব্যবহার করা যায়।</li>
+                        </ul>
+                        <h3>প্রথম কোড (ইনপুট সহ)</h3>
+                        <pre>
+print('Hello World')
+                        </pre>
+                        <h3>পাইথন ইনডেন্টেশন (Python Indentation)</h3>
+                        <p>
+                            ইনডেন্টেশন হলো কোড লাইনের শুরুতে থাকা স্পেস বা ট্যাব।অন্যান্য প্রোগ্রামিং ভাষায় ইনডেন্টেশন সাধারণত কেবল কোডকে সুন্দর দেখানোর জন্য ব্যবহৃত হয়।কিন্তু পাইথনে, ইনডেন্টেশন খুবই গুরুত্বপূর্ণ।পাইথন ইনডেন্টেশন ব্যবহার করে কোড ব্লক নির্ধারণ করে।অর্থাৎ, কোন লাইন কোন ব্লকের অংশ, সেটা দেখানোর জন্য স্পেস বা ট্যাব ব্যবহার করা হয়।
+                        </p>
+                        <h3>উদাহরণ:</h3>
+                        <pre>
+if 5 > 2:
+    print("Five is greater than two!")
+                        </pre>
+                        
+                        
+                        
+                        
+                      
+                        
+
+                    </div>
                 </div>
+                
+                <!-- Middle Column: Code Editor (1/3 width) -->
+                <div class="code-section">
+                    <h2 class="section-title"><i class="fas fa-pencil-alt"></i> Code Editor</h2>
+                    <textarea id="code-editor" style="display: none;"></textarea>
+                    
+                    <div class="buttons">
+                        <button id="run-btn" class="runner-btn"><i class="fas fa-play"></i> Run Code</button>
+                        <button id="clear-btn" class="runner-btn"><i class="fas fa-eraser"></i> Clear</button>
+                        <div class="save-load-btns">
+
+                        </div>
+                    </div>
+                    
+                    <div id="status" class="status hidden"></div>
+                    
+
+                </div>
+                
+                <!-- Right Column: Output (1/3 width) -->
+                <div class="output-section">
+                    <h2 class="section-title"><i class="fas fa-terminal"></i> Output</h2>
+                    <div class="output-container">
+                        <pre id="output">Output will be displayed here...</pre>
+                    </div>
+                    <div id="plot-container" class="plot-container hidden">
+                        <h3><i class="fas fa-chart-line"></i> Plot Output</h3>
+                        <div id="plot-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="examples">
+
+                <div class="back-buttons">
+                    <a href="#"><i class="fas fa-arrow-left"></i> Previous Page</a>
+                </div>  
             </div>
         </div>
     </div>
-</div>
+
+    <script>
+        // Initialize variables
+        let pyodide;
+        let outputElement = document.getElementById('output');
+        let plotContainer = document.getElementById('plot-container');
+        let plotContent = document.getElementById('plot-content');
+        let isPyodideLoading = false;
+        let isPyodideReady = false;
+        let loadedPackages = new Set();
+        let editor;
+        let isDarkTheme = false;
+        let isEditorCollapsed = false;
+        
+        // Initialize CodeMirror editor
+        function initEditor() {
+            editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+                mode: 'python',
+                theme: 'eclipse',
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                indentWithTabs: false,
+                electricChars: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                extraKeys: {
+                    "Tab": function(cm) {
+                        cm.replaceSelection("    ", "end");
+                    }
+                }
+            });
+            
+            editor.setSize('100%', '100%');
+        }
+        
+        // Toggle editor visibility
+        function toggleEditor() {
+            isEditorCollapsed = !isEditorCollapsed;
+            
+            const codeSection = document.querySelector('.code-section');
+            const outputSection = document.querySelector('.output-section');
+            const discussionSection = document.querySelector('.discussion-section');
+            const toggleBtn = document.getElementById('toggle-editor-btn');
+            
+            if (isEditorCollapsed) {
+                codeSection.classList.add('collapsed');
+                outputSection.classList.add('collapsed');
+                discussionSection.classList.add('full-width');
+                toggleBtn.innerHTML = '<i class="fas fa-plus"></i> Open Editor';
+            } else {
+                codeSection.classList.remove('collapsed');
+                outputSection.classList.remove('collapsed');
+                discussionSection.classList.remove('full-width');
+                toggleBtn.innerHTML = '<i class="fas fa-times"></i> Close Editor';
+            }
+            
+            // Refresh CodeMirror after transition
+            setTimeout(() => {
+                if (editor) {
+                    editor.refresh();
+                }
+            }, 300);
+            
+            // Save editor state
+            localStorage.setItem('editorCollapsed', isEditorCollapsed);
+        }
+        
+        // Toggle theme
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme', isDarkTheme);
+            editor.setOption('theme', isDarkTheme ? 'dracula' : 'eclipse');
+            document.getElementById('theme-toggle').innerHTML = isDarkTheme ? 
+                '<i class="fas fa-sun"></i> Light Mode' : 
+                '<i class="fas fa-moon"></i> Dark Mode';
+            
+            // Save theme preference
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+        
+        // Save code to localStorage
+        function saveCode() {
+            const code = editor.getValue();
+            localStorage.setItem('pythonCode', code);
+            
+            const status = document.getElementById('status');
+            status.textContent = "Code saved successfully!";
+            status.className = "status success";
+            status.classList.remove("hidden");
+            
+            setTimeout(() => {
+                status.classList.add("hidden");
+            }, 2000);
+        }
+        
+        // Load code from localStorage
+        function loadCode() {
+            const code = localStorage.getItem('pythonCode');
+            if (code) {
+                editor.setValue(code);
+                
+                const status = document.getElementById('status');
+                status.textContent = "Code loaded successfully!";
+                status.className = "status success";
+                status.classList.remove("hidden");
+                
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+            } else {
+                const status = document.getElementById('status');
+                status.textContent = "No saved code found!";
+                status.className = "status error";
+                status.classList.remove("hidden");
+                
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+            }
+        }
+        
+        // Initialize Pyodide
+        async function initializePyodide() {
+            if (isPyodideReady) return true;
+            if (isPyodideLoading) {
+                // Wait for Pyodide to finish loading
+                return new Promise(resolve => {
+                    const checkInterval = setInterval(() => {
+                        if (isPyodideReady) {
+                            clearInterval(checkInterval);
+                            resolve(true);
+                        }
+                    }, 100);
+                });
+            }
+            
+            isPyodideLoading = true;
+            const status = document.getElementById('status');
+            status.textContent = "Loading Python runtime...";
+            status.className = "status loading";
+            status.classList.remove("hidden");
+            
+            try {
+                // Load Pyodide
+                pyodide = await loadPyodide();
+                
+                // Set up a custom function to capture Python output
+                pyodide.runPython(`
+                import sys
+                from io import StringIO
+                
+                # Create a string buffer to capture output
+                output_buffer = StringIO()
+                
+                # Redirect stdout and stderr to our buffer
+                sys.stdout = output_buffer
+                sys.stderr = output_buffer
+                
+                # Function to get and clear the output buffer
+                def get_output():
+                    value = output_buffer.getvalue()
+                    output_buffer.truncate(0)
+                    output_buffer.seek(0)
+                    return value
+                `);
+                
+                // Make the get_output function available in JavaScript
+                window.getOutput = pyodide.globals.get('get_output');
+                
+                isPyodideReady = true;
+                status.textContent = "Python runtime loaded successfully!";
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+                
+                return true;
+            } catch (error) {
+                status.textContent = `Error loading Python: ${error.message}`;
+                status.className = "status error";
+                isPyodideLoading = false;
+                return false;
+            }
+        }
+        
+        // Load a package
+        async function loadPackage(packageName) {
+            if (loadedPackages.has(packageName)) {
+                return true;
+            }
+            
+            const status = document.getElementById('status');
+            status.textContent = `Loading ${packageName} package...`;
+            status.className = "status loading";
+            status.classList.remove("hidden");
+            
+            try {
+                // Load the package
+                await pyodide.loadPackage(packageName);
+                loadedPackages.add(packageName);
+                
+                status.textContent = `${packageName} package loaded successfully!`;
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+                
+                return true;
+            } catch (error) {
+                status.textContent = `Error loading ${packageName}: ${error.message}`;
+                status.className = "status error";
+                return false;
+            }
+        }
+        
+        // Check if code requires a specific package
+        function checkForPackages(code) {
+            const packageImports = {
+                'pandas': ['pandas', 'pd'],
+                'numpy': ['numpy', 'np'],
+                'matplotlib': ['matplotlib', 'plt'],
+                'sklearn': ['sklearn'],
+                'scipy': ['scipy']
+            };
+            
+            const requiredPackages = [];
+            
+            for (const [pkg, imports] of Object.entries(packageImports)) {
+                for (const importName of imports) {
+                    if (code.includes(importName)) {
+                        requiredPackages.push(pkg);
+                        break;
+                    }
+                }
+            }
+            
+            return requiredPackages;
+        }
+        
+        // Run the Python code
+        async function runCode() {
+            const code = editor.getValue();
+            const status = document.getElementById('status');
+            
+            // Hide plot container initially
+            plotContainer.classList.add("hidden");
+            plotContent.innerHTML = "";
+            
+            // Initialize Pyodide if not ready
+            if (!isPyodideReady) {
+                const initialized = await initializePyodide();
+                if (!initialized) {
+                    return;
+                }
+            }
+            
+            // Check for required packages
+            const requiredPackages = checkForPackages(code);
+            
+            // Load required packages
+            for (const pkg of requiredPackages) {
+                if (!loadedPackages.has(pkg)) {
+                    const loaded = await loadPackage(pkg);
+                    if (!loaded) {
+                        return;
+                    }
+                }
+            }
+            
+            // Show loading status
+            status.textContent = "Running code...";
+            status.className = "status loading";
+            status.classList.remove("hidden");
+            
+            try {
+                // Clear previous output by resetting the buffer
+                pyodide.runPython(`output_buffer.truncate(0); output_buffer.seek(0);`);
+                
+                // Run the user's code
+                await pyodide.runPythonAsync(code);
+                
+                // Get the output from the buffer
+                let output = getOutput();
+                outputElement.textContent = output || "Code executed successfully (no output)";
+                
+                status.textContent = "Code executed successfully!";
+                status.className = "status success";
+                
+            } catch (err) {
+                outputElement.textContent = String(err);
+                status.textContent = "Error occurred during execution!";
+                status.className = "status error";
+            }
+            
+            // Hide status after 3 seconds
+            setTimeout(() => {
+                status.classList.add("hidden");
+            }, 3000);
+        }
+        
+        // Clear the output and code editor
+        function clearAll() {
+            editor.setValue("");
+            outputElement.textContent = "";
+            plotContainer.classList.add("hidden");
+            plotContent.innerHTML = "";
+            const status = document.getElementById('status');
+            status.classList.add("hidden");
+            
+            // Also clear the Python output buffer if Pyodide is ready
+            if (isPyodideReady) {
+                pyodide.runPython(`output_buffer.truncate(0); output_buffer.seek(0);`);
+            }
+        }
+        
+
+        
+        // Set up event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize editor
+            initEditor();
+            
+            // Load theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+            
+            // Load saved code if exists
+            const savedCode = localStorage.getItem('pythonCode');
+            if (savedCode) {
+                editor.setValue(savedCode);
+            }
+            
+            // Load editor state
+            const savedEditorState = localStorage.getItem('editorCollapsed');
+            if (savedEditorState === 'true') {
+                isEditorCollapsed = true;
+                toggleEditor();
+            }
+            
+            // Add event listeners
+            document.getElementById('run-btn').addEventListener('click', runCode);
+            document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            document.getElementById('toggle-editor-btn').addEventListener('click', toggleEditor);
+            
+            // Add example buttons listeners
+            const exampleButtons = document.querySelectorAll('.example-btn');
+            exampleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    loadExample(this.dataset.example);
+                });
+            });
+            
+            // Preload Pyodide in the background
+            initializePyodide();
+        });
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    hamburger.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+    });
+
+    const navLinks = document.querySelectorAll('.mobile-menu .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navScroll = document.querySelector('.nav-scroll-wrapper');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
+
+    scrollLeftBtn.addEventListener('click', () => {
+        navScroll.scrollBy({ left: -150, behavior: 'smooth' });
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+        navScroll.scrollBy({ left: 150, behavior: 'smooth' });
+    });
+});
+</script>
+
 {% endblock %}

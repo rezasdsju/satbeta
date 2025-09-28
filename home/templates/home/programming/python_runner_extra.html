@@ -809,8 +809,48 @@ print(x + y)
             localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
         }
         
-     
-      
+        // Save code to localStorage
+        /*
+        function saveCode() {
+            const code = editor.getValue();
+            localStorage.setItem('pythonCode', code);
+            
+            const status = document.getElementById('status');
+            status.textContent = "Code saved successfully!";
+            status.className = "status success";
+            status.classList.remove("hidden");
+            
+            setTimeout(() => {
+                status.classList.add("hidden");
+            }, 2000);
+        }*/
+        
+        // Load code from localStorage
+        /*
+        function loadCode() {
+            const code = localStorage.getItem('pythonCode');
+            if (code) {
+                editor.setValue(code);
+                
+                const status = document.getElementById('status');
+                status.textContent = "Code loaded successfully!";
+                status.className = "status success";
+                status.classList.remove("hidden");
+                
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+            } else {
+                const status = document.getElementById('status');
+                status.textContent = "No saved code found!";
+                status.className = "status error";
+                status.classList.remove("hidden");
+                
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+            }
+        }*/
         
         // Initialize Pyodide
         async function initializePyodide() {
@@ -875,8 +915,60 @@ print(x + y)
             }
         }
         
- 
-      
+        // Load a package
+        /*
+        async function loadPackage(packageName) {
+            if (loadedPackages.has(packageName)) {
+                return true;
+            }
+            
+            const status = document.getElementById('status');
+            status.textContent = `Loading ${packageName} package...`;
+            status.className = "status loading";
+            status.classList.remove("hidden");
+            
+            try {
+                // Load the package
+                await pyodide.loadPackage(packageName);
+                loadedPackages.add(packageName);
+                
+                status.textContent = `${packageName} package loaded successfully!`;
+                setTimeout(() => {
+                    status.classList.add("hidden");
+                }, 2000);
+                
+                return true;
+            } catch (error) {
+                status.textContent = `Error loading ${packageName}: ${error.message}`;
+                status.className = "status error";
+                return false;
+            }
+        }*/
+        
+        // Check if code requires a specific package
+        /*
+        function checkForPackages(code) {
+            const packageImports = {
+                'pandas': ['pandas', 'pd'],
+                'numpy': ['numpy', 'np'],
+                'matplotlib': ['matplotlib', 'plt'],
+                'sklearn': ['sklearn'],
+                'scipy': ['scipy']
+            };
+            
+            const requiredPackages = [];
+            
+            for (const [pkg, imports] of Object.entries(packageImports)) {
+                for (const importName of imports) {
+                    if (code.includes(importName)) {
+                        requiredPackages.push(pkg);
+                        break;
+                    }
+                }
+            }
+            
+            return requiredPackages;
+        }*/
         
         // Run the Python code
         async function runCode() {
@@ -895,7 +987,19 @@ print(x + y)
                 }
             }
             
-      
+            // Check for required packages
+            /*
+            const requiredPackages = checkForPackages(code);
+            
+            // Load required packages
+            for (const pkg of requiredPackages) {
+                if (!loadedPackages.has(pkg)) {
+                    const loaded = await loadPackage(pkg);
+                    if (!loaded) {
+                        return;
+                    }
+                }
+            }*/
             
             // Show loading status
             status.textContent = "Running code...";
@@ -956,7 +1060,12 @@ print(x + y)
                 toggleTheme();
             }
             
-         
+            // Load saved code if exists
+            /*
+            const savedCode = localStorage.getItem('pythonCode');
+            if (savedCode) {
+                editor.setValue(savedCode);
+            }*/
             
             // Load editor state
             const savedEditorState = localStorage.getItem('editorCollapsed');
@@ -972,10 +1081,51 @@ print(x + y)
             document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
             document.getElementById('toggle-editor-btn').addEventListener('click', toggleEditor);
             
-          
+            // Add example buttons listeners
+            /*
+            const exampleButtons = document.querySelectorAll('.example-btn');
+            exampleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    loadExample(this.dataset.example);
+                });
+            });*/
+            
             // Preload Pyodide in the background
             initializePyodide();
         });
     </script>
+<!--
+<script>/*
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
 
+    hamburger.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+    });
+
+    const navLinks = document.querySelectorAll('.mobile-menu .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    });
+});*/
+</script>
+<script>/*
+document.addEventListener('DOMContentLoaded', function() {
+    const navScroll = document.querySelector('.nav-scroll-wrapper');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
+
+    scrollLeftBtn.addEventListener('click', () => {
+        navScroll.scrollBy({ left: -150, behavior: 'smooth' });
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+        navScroll.scrollBy({ left: 150, behavior: 'smooth' });
+    });
+});*/
+</script>
+-->
 {% endblock %}
